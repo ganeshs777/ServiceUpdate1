@@ -1,0 +1,46 @@
+﻿using ServiceUpdate1.Domain.Models;
+using ServiceUpdate1.WPF.Services;
+using ServiceUpdate1.WPF.ViewModels;
+using System;
+using System.Windows.Input;
+
+namespace ServiceUpdate1.WPF.Commands
+{
+    public class SendColorChatColorMessageCommand : ICommand
+    {
+        private readonly ColorChatViewModel _viewModel;
+        private readonly SignalRChatService _chatService;
+
+        public SendColorChatColorMessageCommand(ColorChatViewModel viewModel, SignalRChatService chatService)
+        {
+            _viewModel = viewModel;
+            _chatService = chatService;
+        }
+
+        public event EventHandler CanExecuteChanged;
+
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+
+        public async void Execute(object parameter)
+        {
+            try
+            {
+                await _chatService.SendColorMessage(new ColorChatColor()
+                {
+                    Red = _viewModel.Red,
+                    Green = _viewModel.Green,
+                    Blue = _viewModel.Blue,
+                });
+
+                _viewModel.ErrorMessage = string.Empty;
+            }
+            catch (Exception)
+            {
+                _viewModel.ErrorMessage = "Unable to send color message.";
+            }
+        }
+    }
+}
