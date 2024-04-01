@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+option csharp_namespace = "ServiceUpdate1.GrpcServer";
+
+package greet;
+
+service UpdateService {
+  rpc GetLatestVersion (Empty) returns (VersionInfo);
+  // Optional: Add a DownloadUpdate method if the server provides direct download
+  // rpc DownloadUpdate (VersionInfo) returns (UpdatePackage);
+}
+
+message Empty {}
+
+message VersionInfo {
+  string version = 1;
+  string downloadUrl = 2; // Optional: Download URL if not directly provided
+}
+
+message UpdatePackage {
+  // Define the format of the update package (e.g., bytes)
+  bytes content = 1;
+}
