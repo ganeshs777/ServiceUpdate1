@@ -1,14 +1,18 @@
 using Grpc.Core;
 using Microsoft.AspNetCore.Hosting.Server;
 using ServiceUpdate1.GrpcServer;
+using ServiceUpdate1.ObserverSubscriber.Provider;
+using ServiceUpdate1.ObserverSubscriber.Subscriber;
+using System;
 using System.Threading.Tasks;
 
 namespace ServiceUpdate1.GrpcServer.Services
 {
 
-public class UpdateServiceImp : GrpcServer.UpdateService.UpdateServiceBase
+    public class UpdateServiceImp : GrpcServer.UpdateService.UpdateServiceBase
     {
         private readonly string _currentVersion = "1.1.0"; // Example: Simulate a newer version
+        private static NotificationProvider _NotificationProvider = new NotificationProvider("BH");
 
         public override Task<VersionInfo> GetLatestVersion(Empty request, ServerCallContext context)
         {
@@ -20,6 +24,22 @@ public class UpdateServiceImp : GrpcServer.UpdateService.UpdateServiceBase
         // {
         //     // ... (logic to provide update package)
         // }
+
+        public override Task<SubscribeResponse> Subscribe(SubscribeRequest request, ServerCallContext context)
+        {
+            try
+            {
+                var observer = new NotificationSubscriber(request.ClientName);
+                observer.Subscribe(_NotificationProvider);
+                return Task.FromResult(new SubscribeResponse { Subscribed = true });
+            }
+            catch (Exception)
+            {
+                //return Task.FromResult(new SubscribeResponse { Subscribed = false });
+                //throw;
+            }
+            return Task.FromResult(new SubscribeResponse { Subscribed = false });
+        }
     }
 
     public class UpdateServer
