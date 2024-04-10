@@ -12,7 +12,7 @@ namespace ServiceUpdate1.GrpcServer.Services
     public class UpdateServiceImp : GrpcServer.UpdateService.UpdateServiceBase
     {
         private readonly string _currentVersion = "1.1.0"; // Example: Simulate a newer version
-        private static NotificationProvider _NotificationProvider = new NotificationProvider("BH");
+        private static readonly NotificationProvider _NotificationProvider = new("BH");
 
         public override Task<VersionInfo> GetLatestVersion(Empty request, ServerCallContext context)
         {

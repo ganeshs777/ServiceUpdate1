@@ -5,7 +5,7 @@ namespace ServiceUpdate1.ObserverSubscriber.Subscriber
     public class NotificationSubscriber : IObserver<UpdateServiceEvent>
     {
         public string SubscriberName { get; private set; }
-        private IDisposable _unsubscriber;
+        private IDisposable? _unsubscriber;
 
         public NotificationSubscriber(string _subscriberName)
         {
@@ -36,6 +36,8 @@ namespace ServiceUpdate1.ObserverSubscriber.Subscriber
 
         public virtual void Unsubscribe()
         {
+            if (_unsubscriber == null)
+                return;
             _unsubscriber.Dispose();
         }
     }
