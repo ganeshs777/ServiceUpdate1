@@ -4,10 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 
+namespace ServiceUpdate1;
 public class FileSystemMonitor
 {
     private readonly string _path;
-    private FileSystemWatcher _watcher;
+    private FileSystemWatcher? _watcher;
 
     public FileSystemMonitor(string path)
     {
@@ -47,6 +48,8 @@ public class FileSystemMonitor
 
     public void StopMonitoring()
     {
+        if (_watcher == null)
+            return;
         _watcher.EnableRaisingEvents = false;
         _watcher.Dispose();
     }
@@ -56,9 +59,9 @@ public class FileSystemMonitor
         var config = ReadConfigFromXml("config.xml");
         Console.WriteLine($"Folder Path: {config}");
         string pathToMonitor = ReadConfigFromXml("config.xml"); //@"C:\Service update setup\"; 
-        if(Directory.Exists(pathToMonitor))
+        if (Directory.Exists(pathToMonitor))
         {
-            FileSystemMonitor monitor = new FileSystemMonitor(pathToMonitor);
+            FileSystemMonitor monitor = new (pathToMonitor);
             monitor.StartMonitoring();
             Console.WriteLine("Press enter to exit...");
             Console.ReadLine();
@@ -76,13 +79,19 @@ public class FileSystemMonitor
         try
         {
             var doc = XDocument.Load(filePath);
-            var folderPath = doc.Element("configuration").Element("folderPath").Value;
-            return folderPath;
+            var configurationNode = doc.Element("configuration");
+            if (configurationNode != null)
+            {
+                var folderPathNode = configurationNode.Element("folderPath");
+                if (folderPathNode != null)
+                {
+                    return folderPathNode.Value;
+                }
+            }
         }
         catch (Exception)
         {
             Console.WriteLine("Configuration error.");
-                       
         }
         return "";
     }

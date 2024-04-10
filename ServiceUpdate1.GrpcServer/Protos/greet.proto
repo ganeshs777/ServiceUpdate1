@@ -8,6 +8,8 @@ service UpdateService {
   rpc GetLatestVersion (Empty) returns (VersionInfo);
   // Optional: Add a DownloadUpdate method if the server provides direct download
   // rpc DownloadUpdate (VersionInfo) returns (UpdatePackage);
+  rpc Subscribe (SubscribeRequest) returns (SubscribeResponse);
+
 }
 
 message Empty {}
@@ -20,4 +22,14 @@ message VersionInfo {
 message UpdatePackage {
   // Define the format of the update package (e.g., bytes)
   bytes content = 1;
+}
+
+message SubscribeRequest {
+  string clientName = 1;
+  string clientUrl = 2; 
+  string serviceName=3;
+}
+
+message SubscribeResponse {
+  bool subscribed = 1;
 }
