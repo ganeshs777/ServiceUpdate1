@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+option csharp_namespace = "ServiceUpdate1.GrpcClient";
+
+package DeployUpdates;
+
+service DeployUpdatesService {
+  rpc SendUpdates (FileMessage) returns (ResponseMessage);
+}
+
+message FileMessage {
+  string filename = 1;
+  // Option 1: Send file path only
+  string contentPath = 2; // Optional: Path to the file on the server (if server fetches)
+
+  // Option 2: Send file content directly (not recommended for large files)
+  bytes content = 3; // Optional: File content in bytes
+}
+
+message ResponseMessage {
+  string message = 1;
+}

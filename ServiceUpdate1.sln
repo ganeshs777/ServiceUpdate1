@@ -19,7 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceUpdate1.WPF", "Servi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceUpdate1.Domain", "ServiceUpdate1.Domain\ServiceUpdate1.Domain.csproj", "{1C5AE4A8-06CA-46D5-943E-816C3E481412}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceUpdate1.ObserverSubscriber", "ServiceUpdate1.ObserverSubscriber\ServiceUpdate1.ObserverSubscriber.csproj", "{EF07EB0C-0C84-4CB2-A005-F80F1798AF6D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceUpdate1.ObserverSubscriber", "ServiceUpdate1.ObserverSubscriber\ServiceUpdate1.ObserverSubscriber.csproj", "{EF07EB0C-0C84-4CB2-A005-F80F1798AF6D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
