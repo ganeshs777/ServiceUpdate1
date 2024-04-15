@@ -26,6 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Protobuf Include="Proto\DeployUpdates.proto" GrpcServices="Client" />
     <Protobuf Include="Proto\greet.proto" GrpcServices="Client" />
   </ItemGroup>
 
