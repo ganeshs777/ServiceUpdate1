@@ -21,6 +21,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceUpdate1.Domain", "Se
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceUpdate1.ObserverSubscriber", "ServiceUpdate1.ObserverSubscriber\ServiceUpdate1.ObserverSubscriber.csproj", "{EF07EB0C-0C84-4CB2-A005-F80F1798AF6D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceUpdate1.WPFServiceUpdater", "ServiceUpdate1.WPFServiceUpdater\ServiceUpdate1.WPFServiceUpdater.csproj", "{CCA30FF9-40E4-4ACF-A05F-49BBD266A4EE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{EF07EB0C-0C84-4CB2-A005-F80F1798AF6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EF07EB0C-0C84-4CB2-A005-F80F1798AF6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EF07EB0C-0C84-4CB2-A005-F80F1798AF6D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CCA30FF9-40E4-4ACF-A05F-49BBD266A4EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CCA30FF9-40E4-4ACF-A05F-49BBD266A4EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CCA30FF9-40E4-4ACF-A05F-49BBD266A4EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CCA30FF9-40E4-4ACF-A05F-49BBD266A4EE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
