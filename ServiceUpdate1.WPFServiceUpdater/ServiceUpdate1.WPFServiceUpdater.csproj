@@ -8,4 +8,14 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ServiceUpdate1.GrpcClient\ServiceUpdate1.GrpcClient.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Files\Machines.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

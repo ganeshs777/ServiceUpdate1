@@ -14,9 +14,9 @@ namespace ServiceUpdate1.GrpcServer.Services
         private readonly string _currentVersion = "1.1.0"; // Example: Simulate a newer version
         private static readonly NotificationProvider _NotificationProvider = new("BH");
 
-        public override Task<VersionInfo> GetLatestVersion(Empty request, ServerCallContext context)
+        public override Task<VersionInfo1> GetLatestVersion(Empty1 request, ServerCallContext context)
         {
-            return Task.FromResult(new VersionInfo { Version = _currentVersion });
+            return Task.FromResult(new VersionInfo1 { Version = _currentVersion });
         }
 
         // Implement DownloadUpdate method logic here if used (commented out in proto)

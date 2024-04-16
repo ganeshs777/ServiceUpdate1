@@ -5,18 +5,23 @@ option csharp_namespace = "ServiceUpdate1.GrpcServer";
 package DeployUpdates;
 
 service DeployUpdatesService {
-  rpc SendUpdates (FileMessage) returns (ResponseMessage);
+	rpc GetLatestVersion (Empty) returns (VersionInfo);  
+	rpc SendUpdates (FileMessage) returns (ResponseMessage);
+	rpc InstallUpdates (Empty) returns (ResponseMessage);  
+}
+
+message Empty {}
+
+message VersionInfo {
+	string version = 1;
 }
 
 message FileMessage {
-  string filename = 1;
-  // Option 1: Send file path only
-  string contentPath = 2; // Optional: Path to the file on the server (if server fetches)
-
-  // Option 2: Send file content directly (not recommended for large files)
-  bytes content = 3; // Optional: File content in bytes
+	string filename = 1;
+	string contentPath = 2;
+	bytes content = 3;
 }
 
 message ResponseMessage {
-  string message = 1;
+	string message = 1;
 }

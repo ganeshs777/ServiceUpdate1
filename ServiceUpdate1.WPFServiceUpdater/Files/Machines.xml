@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<machines>
+   <machine id="1">
+      <machinename>Machine1</machinename>
+	  <machineipaddress>127.0.0.1</machineipaddress>
+	  <port>5048</port>
+      <servicename>Service1</servicename>
+      <installedversion>1.0.0</installedversion>
+      <latestversion>1.0.1</latestversion>
+	  <installedfilepath>C:\Windows\regedit.exe</installedfilepath>
+   </machine>
+   <machine id="2">
+      <machinename>Machine2</machinename>
+      <machineipaddress>127.0.0.1</machineipaddress>
+	  <port>5048</port>
+	  <servicename>Service2</servicename>
+      <installedversion>2.0.0</installedversion>
+      <latestversion>2.0.0</latestversion>
+	  <installedfilepath>C:\repo\ServiceUpdate1\ServiceUpdate1.GrpcClient\bin\Debug\net8.0\ServiceUpdate1.GrpcClient.exe</installedfilepath>
+   </machine>
+   <machine id="3">
+      <machinename>Machine3</machinename>
+      <machineipaddress>127.0.0.1</machineipaddress>
+	  <port>5048</port>
+	  <servicename>Service3</servicename>
+      <installedversion>3.0.0</installedversion>
+      <latestversion>3.0.1</latestversion>
+	  <installedfilepath>C:\Windows\regedit.exe</installedfilepath>
+   </machine>
+   <machine id="4">
+      <machinename>Machine4</machinename>
+      <machineipaddress>127.0.0.1</machineipaddress>
+	  <port>5048</port>
+	  <servicename>Service4</servicename>
+      <installedversion>4.0.0</installedversion>
+      <latestversion>4.0.0</latestversion>
+	  <installedfilepath>C:\Windows\regedit.exe</installedfilepath>
+   </machine>
+</machines>

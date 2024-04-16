@@ -1,9 +1,7 @@
-﻿using System.Threading.Tasks;
-using Google.Protobuf;
+﻿using Google.Protobuf;
 using Grpc.Net.Client;
-using ServiceUpdate1.GrpcClient;
-using static ServiceUpdate1.GrpcClient.DeployUpdatesService;
-using static ServiceUpdate1.GrpcClient.UpdateService;
+using ServiceUpdate1.GrpcServer;
+using static ServiceUpdate1.GrpcServer.DeployUpdatesService;
 
 
 using var channel = GrpcChannel.ForAddress("http://localhost:5048");

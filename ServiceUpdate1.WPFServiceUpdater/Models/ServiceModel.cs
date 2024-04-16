@@ -15,6 +15,20 @@ namespace ServiceUpdate1.WPFServiceUpdater.Models
             get { return _serialNumber; }
             set { _serialNumber = value; OnPropertyChanged(nameof(SerialNumber)); }
         }
+        
+        private string _machineName;
+        public string MachineName
+        {
+            get { return _machineName; }
+            set { _machineName = value; OnPropertyChanged(nameof(MachineName)); }
+        }
+
+        System.Net.IPAddress _machineIPAddress;
+        public System.Net.IPAddress MachineIPAddress
+        {
+            get { return _machineIPAddress; }
+            set { _machineIPAddress = value; OnPropertyChanged(nameof(MachineIPAddress)); }
+        }
 
         private string _serviceName;
         public string ServiceName
@@ -30,11 +44,11 @@ namespace ServiceUpdate1.WPFServiceUpdater.Models
             set { _installedVersion = value; OnPropertyChanged(nameof(InstalledVersion)); }
         }
 
-        private string _remoteVersion;
-        public string RemoteVersion
+        private string _latestVersion;
+        public string LatestVersion
         {
-            get { return _remoteVersion; }
-            set { _remoteVersion = value; OnPropertyChanged(nameof(RemoteVersion)); }
+            get { return _latestVersion; }
+            set { _latestVersion = value; OnPropertyChanged(nameof(LatestVersion)); }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
