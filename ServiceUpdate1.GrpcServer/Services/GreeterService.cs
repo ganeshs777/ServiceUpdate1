@@ -42,19 +42,19 @@ namespace ServiceUpdate1.GrpcServer.Services
         }
     }
 
-    public class UpdateServer
-    {
-        public static void Main(string[] args)
-        {
-            var server = new Server
-            {
-                Services = { GrpcServer.UpdateService.BindService(new UpdateServiceImp()) },
-                Ports = { new ServerPort("localhost", 50051, ServerCredentials.Insecure) }
-            };
-            server.Start();
-            Console.WriteLine("Update server listening on port 50051");
-            Console.ReadLine();
-        }
-    }
+    //public class UpdateServer
+    //{
+    //    public static void Main(string[] args)
+    //    {
+    //        var server = new Server
+    //        {
+    //            Services = { GrpcServer.UpdateService.BindService(new UpdateServiceImp()) },
+    //            Ports = { new ServerPort("localhost", 50051, ServerCredentials.Insecure) }
+    //        };
+    //        server.Start();
+    //        Console.WriteLine("Update server listening on port 50051");
+    //        Console.ReadLine();
+    //    }
+    //}
 
 }

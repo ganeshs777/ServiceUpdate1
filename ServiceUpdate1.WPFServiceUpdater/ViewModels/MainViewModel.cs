@@ -14,6 +14,8 @@ using System.Windows;
 using System.Windows.Input;
 using ServiceUpdate1.GrpcClient;
 using System.Net;
+using System.Drawing;
+using System.Windows.Media;
 
 namespace ServiceUpdate1.WPFServiceUpdater.ViewModels
 {
@@ -59,6 +61,11 @@ namespace ServiceUpdate1.WPFServiceUpdater.ViewModels
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
+        private System.Drawing.Color _bGColor;
+        public System.Drawing.Color BGColor 
+        { get { return _bGColor; }
+            set { _bGColor = value; OnPropertyChanged(nameof(BGColor)); } }
+
         // Define command for the Update button
         private RelayCommand _updateCommand;
         public ICommand UpdateCommand
@@ -103,6 +110,7 @@ namespace ServiceUpdate1.WPFServiceUpdater.ViewModels
 
         private async void UpdateService(object param)
         {
+            BGColor = System.Drawing. Color.Gray;
             _selectedMachine = (Machine)param;
             var result = await ClientHelper.SendUpdateRequest();
             if (result != GRPCClientHelperResponse.SUCCESS)
@@ -115,6 +123,12 @@ namespace ServiceUpdate1.WPFServiceUpdater.ViewModels
                 else
                     _selectedMachine.InstalledVersion = versionResult;
             }
+            BGColor = System.Drawing.Color.Green ;
+        }
+
+        private void Button_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+
         }
     }
 

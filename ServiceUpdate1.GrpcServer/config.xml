@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+	<ServerURL>http://localhost:5048</ServerURL>
+	<!--<ServerURL>http://10.5.92.170:5048</ServerURL>-->
+	<!--<ServerURL>http://10.5.92.167:5048</ServerURL>-->
+</configuration>

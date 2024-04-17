@@ -3,25 +3,26 @@ using Grpc.Core;
 using System.Diagnostics;
 using System.Diagnostics.Metrics;
 using System.IO;
+using System.Net;
 
 namespace ServiceUpdate1.GrpcServer.Services
 {
     public class DeployUpdatesService : GrpcServer.DeployUpdatesService.DeployUpdatesServiceBase
     {
         private readonly string _currentVersion = "1.1.0"; // Example: Simulate a newer version
-        private  string _filePath = @"C:\Windows\regedit.exe"; // Example: Simulate a newer version
-        private string _updateInstallerFilePath = @"C:\Update Installer\Updateinstaller.exe";
+        private string _filePath = @"C:\Windows\regedit.exe"; // Example: Simulate a newer version
+        private string _updateInstallerFolderPath = @"C:\Update Installer";
 
         public override Task<VersionInfo> GetLatestVersion(Empty request, ServerCallContext context)
         {
-            if(!File.Exists(_filePath))
+            if (!File.Exists(_filePath))
             {
                 const string msg = "Service is not installed or not at specified location";
-                throw new RpcException(new Status(StatusCode.FailedPrecondition , msg));
+                throw new RpcException(new Status(StatusCode.FailedPrecondition, msg));
             }
             var versionInfo = FileVersionInfo.GetVersionInfo(_filePath);
             //string version = versionInfo.FileVersion;
-            return Task.FromResult(new VersionInfo { Version = versionInfo.ProductVersion  });
+            return Task.FromResult(new VersionInfo { Version = versionInfo.ProductVersion });
         }
         public override Task<ResponseMessage> SendUpdates(FileMessage message, ServerCallContext context)
         {
@@ -29,12 +30,12 @@ namespace ServiceUpdate1.GrpcServer.Services
             try
             {
                 ByteString byteString = message.Content;
-                if(!Directory.Exists(_updateInstallerFilePath))
-                    Directory.CreateDirectory(Path.GetDirectoryName(_updateInstallerFilePath));
-                using (FileStream outputStream = File.OpenWrite(_updateInstallerFilePath))
+                if (!Directory.Exists(_updateInstallerFolderPath))
+                    Directory.CreateDirectory(_updateInstallerFolderPath);
+                _filePath = Path.Combine(_updateInstallerFolderPath, message.Filename);
+                using (FileStream outputStream = File.OpenWrite(_filePath))
                 {
                     byteString.WriteTo(outputStream);
-                    _filePath = _updateInstallerFilePath;
                 }
                 return Task.FromResult(new ResponseMessage { Message = "SUCCESS" });
             }
@@ -57,5 +58,22 @@ namespace ServiceUpdate1.GrpcServer.Services
             }
         }
 
+        
+
+    }
+
+    public class UpdateServer
+    {
+        public static void Main(string[] args)
+        {
+            var server = new Server
+            {
+                Services = { GrpcServer.DeployUpdatesService.BindService(new DeployUpdatesService()) },
+                Ports = { new ServerPort("10.5.92.167", 5000, ServerCredentials.Insecure) }
+            };
+            server.Start();
+            Console.WriteLine("Update server listening on port 50051");
+            Console.ReadLine();
+        }
     }
 }
