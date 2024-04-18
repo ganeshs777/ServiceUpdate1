@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<machines>
+   <machine id="1">
+      <machinename>Machine1</machinename>
+	  <machineipaddress>10.5.92.167</machineipaddress>
+	   <port>5048</port>
+	   <!--<port>5048</port>-->
+      <servicename>Service1</servicename>
+      <installedversion>1.0.0</installedversion>
+      <latestversion>1.0.1</latestversion>
+	  <installedfilepath>C:\Files To Send\bfsvc.exe</installedfilepath>
+   </machine>
+   <machine id="2">
+      <machinename>Machine2</machinename>
+      <machineipaddress>10.5.92.170</machineipaddress>
+	  <port>5048</port>
+	  <servicename>Service2</servicename>
+      <installedversion>2.0.0</installedversion>
+      <latestversion>2.0.0</latestversion>
+	  <installedfilepath>C:\Files To Send\bfsvc.exe</installedfilepath>
+   </machine>
+   <machine id="3">
+      <machinename>HostMachine</machinename>
+      <machineipaddress>127.0.0.1</machineipaddress>
+	  <port>5048</port>
+	  <servicename>Service3</servicename>
+      <installedversion>3.0.0</installedversion>
+      <latestversion>3.0.1</latestversion>
+	  <installedfilepath>C:\Users\shewgan\Downloads\git (1).zip</installedfilepath>
+   </machine>
+   <!--<machine id="4">
+      <machinename>Machine4</machinename>
+      <machineipaddress>127.0.0.1</machineipaddress>
+	  <port>5048</port>
+	  <servicename>Service4</servicename>
+      <installedversion>4.0.0</installedversion>
+      <latestversion>4.0.0</latestversion>
+	  <installedfilepath>C:\Files To Send\write.exe</installedfilepath>
+   </machine>-->
+</machines>

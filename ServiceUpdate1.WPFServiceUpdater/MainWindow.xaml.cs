@@ -1,4 +1,7 @@
-﻿using System.Text;
+﻿using ServiceUpdate1.WPFServiceUpdater.Models;
+using ServiceUpdate1.WPFServiceUpdater.ViewModels;
+using System.Data;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -19,6 +22,23 @@ namespace ServiceUpdate1.WPFServiceUpdater
         public MainWindow()
         {
             InitializeComponent();
+            //this.DataContext = new MainViewModel();
+        }
+
+        public void btnView_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Machine machine = (Machine)((Button)e.Source).DataContext;
+                String MachineName = machine.MachineName;
+                String MachineIPAddress = machine.MachineIPAddress;
+                MessageBox.Show("You Clicked : " + MachineName + "\r\nIP Address : " + MachineIPAddress);
+                //This is the code which will show the button click row data. Thank you.
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message.ToString());
+            }
         }
     }
 }

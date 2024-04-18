@@ -4,20 +4,46 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ServiceUpdate1.WPFServiceUpdater"
+        xmlns:vm="clr-namespace:ServiceUpdate1.WPFServiceUpdater.ViewModels" d:DataContext="{d:DesignInstance Type=vm:MainViewModel}"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800"
         DataContext="{StaticResource MainViewModel}">
+    <!--<Window.DataContext>
+        <vm:MainViewModel/>
+    </Window.DataContext>-->
     <Grid>
-        <DataGrid ItemsSource="{Binding Services}" AutoGenerateColumns="False">
+        <DataGrid ItemsSource="{Binding Machines}" AutoGenerateColumns="False" Margin="5,50,5,5">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Sr. No." Binding="{Binding SerialNumber}" />
-                <DataGridTextColumn Header="Service Name" Binding="{Binding ServiceName}" />
+                <DataGridTextColumn Header="Machine Name" Binding="{Binding MachineName}" />
+                <DataGridTextColumn Header="Machine IP Address" Binding="{Binding MachineIPAddress}" />
+                <DataGridTextColumn Header="Port" Binding="{Binding Port}" />
+                <!--<DataGridTextColumn Header="Service Name" Binding="{Binding ServiceName}" />-->
                 <DataGridTextColumn Header="Installed Version" Binding="{Binding InstalledVersion}" />
-                <DataGridTextColumn Header="Remote Version" Binding="{Binding RemoteVersion}" />
-                <DataGridTemplateColumn Header="Update">
+                <DataGridTextColumn Header="Installed File Path" Binding="{Binding InstalledFilePath}" />
+                <DataGridTextColumn Header="Latest Version" Binding="{Binding LatestVersion}" />
+                <DataGridTemplateColumn Header="Get Installed Version">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Content="Update" Command="{Binding DataContext.UpdateCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}"/>
+                            <Button Content="Get Installed Version" Command="{Binding DataContext.GetInstalledVersionCommand, RelativeSource={RelativeSource AncestorType=DataGrid }}" CommandParameter="{Binding}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Install Updates">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Content="Install Updates" 
+                                    Command="{Binding DataContext.UpdateCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" 
+                                    CommandParameter="{Binding}"  />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Upload File">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Content="Upload File" 
+                     Command="{Binding DataContext.UploadFileCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" 
+                     CommandParameter="{Binding}"  />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

@@ -5,16 +5,16 @@ option csharp_namespace = "ServiceUpdate1.GrpcClient";
 package greet;
 
 service UpdateService {
-  rpc GetLatestVersion (Empty) returns (VersionInfo);
+  rpc GetLatestVersion (Empty1) returns (VersionInfo1);
   // Optional: Add a DownloadUpdate method if the server provides direct download
   // rpc DownloadUpdate (VersionInfo) returns (UpdatePackage);
   rpc Subscribe (SubscribeRequest) returns (SubscribeResponse);
 
 }
 
-message Empty {}
+message Empty1 {}
 
-message VersionInfo {
+message VersionInfo1 {
   string version = 1;
   string downloadUrl = 2; // Optional: Download URL if not directly provided
 }

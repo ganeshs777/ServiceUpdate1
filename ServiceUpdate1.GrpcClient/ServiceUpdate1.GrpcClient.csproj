@@ -11,6 +11,10 @@
     <Compile Remove="MyWcfService.cs" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="Proto\DeployUpdates.proto" />
+  </ItemGroup>
+
 	<ItemGroup>
     <PackageReference Include="Google.Protobuf" Version="3.26.1" />
     <PackageReference Include="Grpc.Net.Client" Version="2.62.0" />
@@ -26,7 +30,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="Proto\DeployUpdates.proto" GrpcServices="Client" />
+    <Protobuf Include="..\ServiceUpdate1.GrpcServer\Protos\DeployUpdates.proto" GrpcServices="Client">
+      <Link>Proto\DeployUpdates.proto</Link>
+    </Protobuf>
     <Protobuf Include="Proto\greet.proto" GrpcServices="Client" />
   </ItemGroup>
 
