@@ -24,11 +24,14 @@ namespace ServiceUpdate1.GrpcClient
     }
     public class GRPCClientHelper
     {
-        IPAddress _iPAddress = new([127, 0, 0, 1]);
+        private readonly IPAddress _iPAddress ;
         int _port = 5048;
         string _filePath;
         private bool _validInputs;
-        private GrpcChannel _channel;
+        private readonly GrpcChannel _channel;
+        private readonly DeployUpdatesService.DeployUpdatesServiceClient _client;
+        private const int ChunkSize = 1024 * 32; // 32 KB
+
         public GRPCClientHelper(IPAddress IPAddress, int Port, string FilePath)
         {
             _iPAddress = IPAddress;
@@ -39,6 +42,7 @@ namespace ServiceUpdate1.GrpcClient
             channelOptions.MaxSendMessageSize = int.MaxValue;
             channelOptions.MaxReceiveMessageSize = int.MaxValue;
             _channel = GrpcChannel.ForAddress($"http://{_iPAddress}:{_port}", channelOptions);
+            _client = new DeployUpdatesServiceClient(_channel);
         }
 
         public async Task<GRPCClientHelperResponse> SendUpdateRequest()
@@ -62,10 +66,9 @@ namespace ServiceUpdate1.GrpcClient
             //GrpcChannelOptions channelOptions = new GrpcChannelOptions();
             //channelOptions.MaxSendMessageSize = int.MaxValue;
 
-            var client = new DeployUpdatesServiceClient(_channel);
             //var filePath = _filePath;// AppContext.BaseDirectory + "ServiceUpdate1.GrpcClient.exe";// "path/to/your/file.txt";
             byte[] fileBytes = File.ReadAllBytes(_filePath);
-            var reply = await client.SendUpdatesAsync(new FileMessage
+            var reply = await _client.SendUpdatesAsync(new FileMessage
             {
                 Filename = Path.GetFileName(_filePath),
                 ContentPath = _filePath,
@@ -85,9 +88,9 @@ namespace ServiceUpdate1.GrpcClient
                 return GRPCClientHelperResponse.HOST_NOT_ACCESSIBLE;
             using (var channel = GrpcChannel.ForAddress($"http://{_iPAddress}:{_port}"))
             {
-                var client = new DeployUpdatesServiceClient(channel);
+                //var client = new DeployUpdatesServiceClient(channel);
                 //var filePath = _filePath;// AppContext.BaseDirectory + "ServiceUpdate1.GrpcClient.exe";// "path/to/your/file.txt";
-                var reply = await client.InstallUpdatesAsync(new Empty());
+                var reply = await _client.InstallUpdatesAsync(new Empty());
                 //Console.WriteLine("Service update : " + reply.Message);
                 if (reply.Message == "SUCCESS")
                     return GRPCClientHelperResponse.SUCCESS;
@@ -115,6 +118,48 @@ namespace ServiceUpdate1.GrpcClient
 
             }
             return "UNSUCCESS";
+        }
+
+        public async Task<bool> UploadFile()
+        {
+            Console.WriteLine("Starting call");
+            var call = _client.UploadFile();
+
+            Console.WriteLine("Sending file metadata");
+            await call.RequestStream.WriteAsync(new UploadFileRequest
+            {
+                Metadata = new FileMetadata
+                {
+                    FileName = Path.GetFileName(_filePath)
+                }
+            }) ;
+
+            var buffer = new byte[ChunkSize];
+            await using var readStream = File.OpenRead(_filePath);
+
+            while (true)
+            {
+                var count = await readStream.ReadAsync(buffer);
+                if (count == 0)
+                {
+                    break;
+                }
+
+                Console.WriteLine("Sending file data chunk of length " + count);
+                await call.RequestStream.WriteAsync(new UploadFileRequest
+                {
+                    Data = UnsafeByteOperations.UnsafeWrap(buffer.AsMemory(0, count))
+                });
+            }
+
+            Console.WriteLine("Complete request");
+            await call.RequestStream.CompleteAsync();
+
+            var response = await call;
+            Console.WriteLine("Upload id: " + response.Id);
+
+            Console.WriteLine("Shutting down");
+            return true;
         }
 
         private bool ValidateInputs()

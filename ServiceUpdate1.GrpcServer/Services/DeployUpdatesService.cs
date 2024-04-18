@@ -13,6 +13,15 @@ namespace ServiceUpdate1.GrpcServer.Services
         private string _filePath = @"C:\Windows\regedit.exe"; // Example: Simulate a newer version
         private string _updateInstallerFolderPath = @"C:\Update Installer";
 
+        private readonly ILogger _logger;
+        private readonly IConfiguration _config;
+
+        public DeployUpdatesService(ILoggerFactory loggerFactory, IConfiguration config)
+        {
+            _logger = loggerFactory.CreateLogger<DeployUpdatesService>();
+            _config = config;
+        }
+
         public override Task<VersionInfo> GetLatestVersion(Empty request, ServerCallContext context)
         {
             if (!File.Exists(_filePath))
@@ -58,22 +67,42 @@ namespace ServiceUpdate1.GrpcServer.Services
             }
         }
 
-        
-
-    }
-
-    public class UpdateServer
-    {
-        public static void Main(string[] args)
+        public override async Task<UploadFileResponse> UploadFile(IAsyncStreamReader<UploadFileRequest> requestStream, ServerCallContext context)
         {
-            var server = new Server
+            var uploadId = Path.GetRandomFileName();
+            var uploadPath = Path.Combine(_config["StoredFilesPath"]!, uploadId);
+            Directory.CreateDirectory(uploadPath);
+
+            await using var writeStream = File.Create(Path.Combine(uploadPath, "data.bin"));
+
+            await foreach (var message in requestStream.ReadAllAsync())
             {
-                Services = { GrpcServer.DeployUpdatesService.BindService(new DeployUpdatesService()) },
-                Ports = { new ServerPort("10.5.92.167", 5000, ServerCredentials.Insecure) }
-            };
-            server.Start();
-            Console.WriteLine("Update server listening on port 50051");
-            Console.ReadLine();
+                if (message.Metadata != null)
+                {
+                    await File.WriteAllTextAsync(Path.Combine(uploadPath, "metadata.json"), message.Metadata.ToString());
+                }
+                if (message.Data != null)
+                {
+                    await writeStream.WriteAsync(message.Data.Memory);
+                }
+            }
+
+            return new UploadFileResponse { Id = uploadId };
         }
     }
+
+    //public class UpdateServer
+    //{
+    //    public static void Main(string[] args)
+    //    {
+    //        var server = new Server
+    //        {
+    //            Services = { GrpcServer.DeployUpdatesService.BindService(new DeployUpdatesService()) },
+    //            Ports = { new ServerPort("10.5.92.167", 5000, ServerCredentials.Insecure) }
+    //        };
+    //        server.Start();
+    //        Console.WriteLine("Update server listening on port 50051");
+    //        Console.ReadLine();
+    //    }
+    //}
 }

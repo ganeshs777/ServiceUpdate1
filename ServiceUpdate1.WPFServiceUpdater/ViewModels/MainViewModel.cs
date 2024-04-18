@@ -92,6 +92,18 @@ namespace ServiceUpdate1.WPFServiceUpdater.ViewModels
                 return _getInstalledVersionCommand;
             }
         }
+        private RelayCommand _uploadFileCommand;
+        public ICommand UploadFileCommand
+        {
+            get
+            {
+                if (_uploadFileCommand == null)
+                {
+                    _uploadFileCommand = new RelayCommand(param => UploadFile(param));
+                }
+                return _uploadFileCommand;
+            }
+        }
 
         private async void GetInstalledVersionAsync(object param)
         {
@@ -121,9 +133,20 @@ namespace ServiceUpdate1.WPFServiceUpdater.ViewModels
                 if (versionResult == "UNSUCCESS")
                     MessageBox.Show("UNSUCCESS", "Information - Version Info Reply");
                 else
-                    _selectedMachine.InstalledVersion = versionResult;
+                    MessageBox.Show("SUCCESS", "Information - Updated file.");
+                _selectedMachine.InstalledVersion = versionResult;
             }
             BGColor = System.Drawing.Color.Green ;
+        }
+
+        private async void UploadFile(object param)
+        {
+            _selectedMachine = (Machine)param;
+            var result = await ClientHelper.UploadFile();
+            if (!result )
+                MessageBox.Show("UNSUCCESS", "Information -  File upload failed.");
+            else
+                MessageBox.Show("SUCCESS", "Information - File uploaded successfully.");
         }
 
         private void Button_MouseDown(object sender, MouseButtonEventArgs e)
