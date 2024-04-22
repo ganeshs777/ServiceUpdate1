@@ -1,5 +1,6 @@
 ﻿using Google.Protobuf;
 using Grpc.Core;
+using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Diagnostics.Metrics;
 using System.IO;
@@ -12,6 +13,7 @@ namespace ServiceUpdate1.GrpcServer.Services
         private readonly string _currentVersion = "1.1.0"; // Example: Simulate a newer version
         private string _filePath = @"C:\Windows\regedit.exe"; // Example: Simulate a newer version
         private string _updateInstallerFolderPath = @"C:\Update Installer";
+        private string _uploadFolderPath = @"C:\Update Installer";
 
         private readonly ILogger _logger;
         private readonly IConfiguration _config;
@@ -20,6 +22,12 @@ namespace ServiceUpdate1.GrpcServer.Services
         {
             _logger = loggerFactory.CreateLogger<DeployUpdatesService>();
             _config = config;
+        }
+
+        public DeployUpdatesService(ILogger logger, string uploadPath)
+        {
+            _logger = logger;
+            _uploadFolderPath = uploadPath;
         }
 
         public override Task<VersionInfo> GetLatestVersion(Empty request, ServerCallContext context)
@@ -70,7 +78,9 @@ namespace ServiceUpdate1.GrpcServer.Services
         public override async Task<UploadFileResponse> UploadFile(IAsyncStreamReader<UploadFileRequest> requestStream, ServerCallContext context)
         {
             var uploadId = Path.GetRandomFileName();
-            var uploadPath = Path.Combine(_config["StoredFilesPath"]!, uploadId);
+            //var uploadPath = Path.Combine(_config["StoredFilesPath"]!, uploadId);
+            var uploadPath = Path.Combine(_uploadFolderPath , uploadId);
+
             Directory.CreateDirectory(uploadPath);
 
             await using var writeStream = File.Create(Path.Combine(uploadPath, "data.bin"));
