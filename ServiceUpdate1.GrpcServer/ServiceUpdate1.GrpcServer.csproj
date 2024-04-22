@@ -14,17 +14,20 @@
   </ItemGroup>
 
   <ItemGroup>
-	  <Protobuf Include="Protos\greet.proto" GrpcServices="Server" />
+    <Compile Remove="Services\GreeterService.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Protos\greet.proto" />
+  </ItemGroup>
+
+  <ItemGroup>
 	  <Protobuf Include="Protos\DeployUpdates.proto" GrpcServices="Server" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Grpc.AspNetCore" Version="2.57.0" />
     <PackageReference Include="Grpc.Core" Version="2.46.6" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\ServiceUpdate1.ObserverSubscriber\ServiceUpdate1.ObserverSubscriber.csproj" />
   </ItemGroup>
 
   <ItemGroup>
