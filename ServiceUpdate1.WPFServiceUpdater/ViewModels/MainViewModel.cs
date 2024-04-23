@@ -105,6 +105,19 @@ namespace ServiceUpdate1.WPFServiceUpdater.ViewModels
             }
         }
 
+        private RelayCommand _xCopyCommand;
+        public ICommand XCopyCommand
+        {
+            get
+            {
+                if (_xCopyCommand == null)
+                {
+                    _xCopyCommand = new RelayCommand(param => XCopyFolder(param));
+                }
+                return _xCopyCommand;
+            }
+        }
+
         private async void GetInstalledVersionAsync(object param)
         {
             _selectedMachine = (Machine)param;
@@ -149,9 +162,14 @@ namespace ServiceUpdate1.WPFServiceUpdater.ViewModels
                 MessageBox.Show("SUCCESS", "Information - File uploaded successfully.");
         }
 
-        private void Button_MouseDown(object sender, MouseButtonEventArgs e)
+        private async void XCopyFolder(object param)
         {
-
+            BGColor = System.Drawing.Color.Gray;
+            _selectedMachine = (Machine)param;
+            var result = await ClientHelper.XCopy();
+            if (result != GRPCClientHelperResponse.SUCCESS)
+                MessageBox.Show("UNSUCCESS", "Information - Send Update Reply");
+            BGColor = System.Drawing.Color.Green;
         }
     }
 

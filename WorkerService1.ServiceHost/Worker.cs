@@ -14,7 +14,7 @@ namespace WorkerService1.ServiceHost
             var server = new Server
             {
                 Services = { ServiceUpdate1.GrpcServer.DeployUpdatesService.BindService(new ServiceUpdate1.GrpcServer.Services.DeployUpdatesService(logger, @"C:\Update Installer")) },
-                Ports = { new ServerPort("127.0.0.1", 5000, ServerCredentials.Insecure) }
+                Ports = { new ServerPort("127.0.0.1", 5048, ServerCredentials.Insecure) }
                 //Ports = { new ServerPort("10.5.92.167", 5000, ServerCredentials.Insecure) }
             };
             server.Start();
@@ -26,7 +26,7 @@ namespace WorkerService1.ServiceHost
             {
                 if (_logger.IsEnabled(LogLevel.Information))
                 {
-                    _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
+                    //_logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
                 }
                 await Task.Delay(1000, stoppingToken);
             }

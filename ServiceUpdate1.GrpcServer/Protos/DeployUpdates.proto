@@ -9,6 +9,7 @@ service DeployUpdatesService {
 	rpc SendUpdates (FileMessage) returns (ResponseMessage);
 	rpc InstallUpdates (Empty) returns (ResponseMessage);  
 	rpc UploadFile (stream UploadFileRequest) returns (UploadFileResponse);
+	rpc XCopy (FileMessage) returns (ResponseMessage);
 }
 
 message UploadFileRequest {

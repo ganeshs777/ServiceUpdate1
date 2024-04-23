@@ -86,15 +86,10 @@ namespace ServiceUpdate1.GrpcClient
                 return GRPCClientHelperResponse.INVALID_REQUEST_INPUTS;
             if (!_iPAddress.IsAccessible())
                 return GRPCClientHelperResponse.HOST_NOT_ACCESSIBLE;
-            using (var channel = GrpcChannel.ForAddress($"http://{_iPAddress}:{_port}"))
-            {
-                //var client = new DeployUpdatesServiceClient(channel);
-                //var filePath = _filePath;// AppContext.BaseDirectory + "ServiceUpdate1.GrpcClient.exe";// "path/to/your/file.txt";
-                var reply = await _client.InstallUpdatesAsync(new Empty());
-                //Console.WriteLine("Service update : " + reply.Message);
-                if (reply.Message == "SUCCESS")
-                    return GRPCClientHelperResponse.SUCCESS;
-            }
+            var reply = await _client.InstallUpdatesAsync(new Empty());
+            //Console.WriteLine("Service update : " + reply.Message);
+            if (reply.Message == "SUCCESS")
+                return GRPCClientHelperResponse.SUCCESS;
             return GRPCClientHelperResponse.FAILED;
         }
 
@@ -160,6 +155,23 @@ namespace ServiceUpdate1.GrpcClient
 
             Console.WriteLine("Shutting down");
             return true;
+        }
+
+        public async Task<GRPCClientHelperResponse> XCopy()
+        {
+            if (!_validInputs)
+                return GRPCClientHelperResponse.INVALID_REQUEST_INPUTS;
+            if (!_iPAddress.IsAccessible())
+                return GRPCClientHelperResponse.HOST_NOT_ACCESSIBLE;
+            var reply = await _client.XCopyAsync(new FileMessage
+            {
+                Filename = Path.GetFileName(_filePath),
+                ContentPath = _filePath,
+            });
+            //Console.WriteLine("Service update : " + reply.Message);
+            if (reply.Message == "SUCCESS")
+                return GRPCClientHelperResponse.SUCCESS;
+            return GRPCClientHelperResponse.FAILED;
         }
 
         private bool ValidateInputs()

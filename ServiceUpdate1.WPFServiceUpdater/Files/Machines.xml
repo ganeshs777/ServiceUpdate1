@@ -28,7 +28,7 @@
       <latestversion>3.0.1</latestversion>
 	  <installedfilepath>C:\Users\shewgan\Downloads\git (1).zip</installedfilepath>
    </machine>
-   <!--<machine id="4">
+   <machine id="4">
       <machinename>Machine4</machinename>
       <machineipaddress>127.0.0.1</machineipaddress>
 	  <port>5048</port>
@@ -36,5 +36,5 @@
       <installedversion>4.0.0</installedversion>
       <latestversion>4.0.0</latestversion>
 	  <installedfilepath>C:\Files To Send\write.exe</installedfilepath>
-   </machine>-->
+   </machine>
 </machines>

@@ -35,9 +35,11 @@ namespace ServiceUpdate1.GrpcServer.Services
             if (!File.Exists(_filePath))
             {
                 const string msg = "Service is not installed or not at specified location";
+                _logger.LogError(msg, DateTimeOffset.Now);
                 throw new RpcException(new Status(StatusCode.FailedPrecondition, msg));
             }
             var versionInfo = FileVersionInfo.GetVersionInfo(_filePath);
+            _logger.LogInformation($"{DateTimeOffset.Now} : File : {_filePath} Version: {versionInfo.ProductVersion} ", DateTimeOffset.Now);
             //string version = versionInfo.FileVersion;
             return Task.FromResult(new VersionInfo { Version = versionInfo.ProductVersion });
         }
@@ -98,6 +100,56 @@ namespace ServiceUpdate1.GrpcServer.Services
             }
 
             return new UploadFileResponse { Id = uploadId };
+        }
+
+        public override Task<ResponseMessage> XCopy(FileMessage message, ServerCallContext context)
+        {
+            //string outputFilePath = AppContext.BaseDirectory + $"ServiceUpdate1.GrpcClient{counter}.exe";
+            try
+            {
+                if (!Directory.Exists(_updateInstallerFolderPath))
+                    Directory.CreateDirectory(_updateInstallerFolderPath);
+                _filePath = Path.Combine(_updateInstallerFolderPath, message.Filename);
+                ProcessXcopy(message.ContentPath, _updateInstallerFolderPath);
+                return Task.FromResult(new ResponseMessage { Message = "SUCCESS" });
+            }
+            catch (Exception)
+            {
+                return Task.FromResult(new ResponseMessage { Message = "UNSUCCESS" });
+            }
+        }
+
+        /// <summary>
+        /// Method to Perform Xcopy to copy files/folders from Source machine to Target Machine
+        /// </summary>
+        /// <param name="SolutionDirectory"></param>
+        /// <param name="TargetDirectory"></param>
+        private void ProcessXcopy(string SolutionDirectory, string TargetDirectory)
+        {
+            // Use ProcessStartInfo class
+            ProcessStartInfo startInfo = new ProcessStartInfo();
+            startInfo.CreateNoWindow = false;
+            startInfo.UseShellExecute = false;
+            //Give the name as Xcopy
+            startInfo.FileName = "xcopy";
+            //make the window Hidden
+            startInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            //Send the Source and destination as Arguments to the process
+            startInfo.Arguments = "\"" + SolutionDirectory + "\"" + " " + "\"" + TargetDirectory + "\"" + @" /e /y /I";
+            try
+            {
+                // Start the process with the info we specified.
+                // Call WaitForExit and then the using statement will close.
+                using (Process exeProcess = Process.Start(startInfo))
+                {
+                    exeProcess.WaitForExit();
+                }
+            }
+            catch (Exception exp)
+            {
+                throw exp;
+            }
+
         }
     }
 
