@@ -2,7 +2,7 @@
 using Grpc.Core;
 using ServiceUpdate1.GrpcServer;
 
-namespace WorkerService1.ServiceHost
+namespace ServiceUpdate1.ServiceHost
 {
     public class Worker : BackgroundService
     {

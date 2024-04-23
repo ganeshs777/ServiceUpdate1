@@ -17,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceUpdate1.ObserverSubs
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceUpdate1.WPFServiceUpdater", "ServiceUpdate1.WPFServiceUpdater\ServiceUpdate1.WPFServiceUpdater.csproj", "{CCA30FF9-40E4-4ACF-A05F-49BBD266A4EE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorkerService1.ServiceHost", "WorkerService1.ServiceHost\WorkerService1.ServiceHost.csproj", "{0C0FE5A8-1CF6-4ECD-B005-8D846C591496}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceUpdate1.ServiceHost", "WorkerService1.ServiceHost\ServiceUpdate1.ServiceHost.csproj", "{0C0FE5A8-1CF6-4ECD-B005-8D846C591496}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
