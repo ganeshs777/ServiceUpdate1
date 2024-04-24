@@ -35,6 +35,6 @@
 	  <servicename>Service4</servicename>
       <installedversion>4.0.0</installedversion>
       <latestversion>4.0.0</latestversion>
-	  <installedfilepath>C:\Files To Send\write.exe</installedfilepath>
+	  <installedfilepath>C:\repo\ServiceUpdate1\ServiceUpdate1.GrpcServer\bin\Release\net8.0\publish\ServiceUpdate1.GrpcServer.exe</installedfilepath>
    </machine>
 </machines>

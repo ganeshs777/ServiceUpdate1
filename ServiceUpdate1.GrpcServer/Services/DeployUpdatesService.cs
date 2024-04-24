@@ -24,11 +24,11 @@ namespace ServiceUpdate1.GrpcServer.Services
             _config = config;
         }
 
-        public DeployUpdatesService(ILogger logger, string uploadPath)
-        {
-            _logger = logger;
-            _uploadFolderPath = uploadPath;
-        }
+        //public DeployUpdatesService(ILogger logger, string uploadPath)
+        //{
+        //    _logger = logger;
+        //    _uploadFolderPath = uploadPath;
+        //}
 
         public override Task<VersionInfo> GetLatestVersion(Empty request, ServerCallContext context)
         {

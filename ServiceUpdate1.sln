@@ -3,17 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34723.18
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceUpdate1", "ServiceUpdate1\ServiceUpdate1.csproj", "{9BD2CE69-7F4E-4188-B5ED-7CEB2F70FB0C}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceUpdate1.GrpcServer", "ServiceUpdate1.GrpcServer\ServiceUpdate1.GrpcServer.csproj", "{C264F256-F004-46C2-9FE0-54E6B59BA0B5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceUpdate1.GrpcClient", "ServiceUpdate1.GrpcClient\ServiceUpdate1.GrpcClient.csproj", "{CA1A97CE-6754-4F7F-9DDB-6F46A8B0CFA6}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceUpdate1.ConsoleServiceHost", "ServiceUpdate1.ConsoleServiceHost\ServiceUpdate1.ConsoleServiceHost.csproj", "{8481FDEB-B8F8-43B4-9647-FA15508299B2}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceUpdate1.Domain", "ServiceUpdate1.Domain\ServiceUpdate1.Domain.csproj", "{1C5AE4A8-06CA-46D5-943E-816C3E481412}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceUpdate1.ObserverSubscriber", "ServiceUpdate1.ObserverSubscriber\ServiceUpdate1.ObserverSubscriber.csproj", "{EF07EB0C-0C84-4CB2-A005-F80F1798AF6D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceUpdate1.WPFServiceUpdater", "ServiceUpdate1.WPFServiceUpdater\ServiceUpdate1.WPFServiceUpdater.csproj", "{CCA30FF9-40E4-4ACF-A05F-49BBD266A4EE}"
 EndProject
@@ -25,10 +17,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{9BD2CE69-7F4E-4188-B5ED-7CEB2F70FB0C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9BD2CE69-7F4E-4188-B5ED-7CEB2F70FB0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9BD2CE69-7F4E-4188-B5ED-7CEB2F70FB0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9BD2CE69-7F4E-4188-B5ED-7CEB2F70FB0C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C264F256-F004-46C2-9FE0-54E6B59BA0B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C264F256-F004-46C2-9FE0-54E6B59BA0B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C264F256-F004-46C2-9FE0-54E6B59BA0B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -37,18 +25,6 @@ Global
 		{CA1A97CE-6754-4F7F-9DDB-6F46A8B0CFA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CA1A97CE-6754-4F7F-9DDB-6F46A8B0CFA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CA1A97CE-6754-4F7F-9DDB-6F46A8B0CFA6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8481FDEB-B8F8-43B4-9647-FA15508299B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8481FDEB-B8F8-43B4-9647-FA15508299B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8481FDEB-B8F8-43B4-9647-FA15508299B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8481FDEB-B8F8-43B4-9647-FA15508299B2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1C5AE4A8-06CA-46D5-943E-816C3E481412}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1C5AE4A8-06CA-46D5-943E-816C3E481412}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1C5AE4A8-06CA-46D5-943E-816C3E481412}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1C5AE4A8-06CA-46D5-943E-816C3E481412}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EF07EB0C-0C84-4CB2-A005-F80F1798AF6D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EF07EB0C-0C84-4CB2-A005-F80F1798AF6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EF07EB0C-0C84-4CB2-A005-F80F1798AF6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EF07EB0C-0C84-4CB2-A005-F80F1798AF6D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CCA30FF9-40E4-4ACF-A05F-49BBD266A4EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CCA30FF9-40E4-4ACF-A05F-49BBD266A4EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CCA30FF9-40E4-4ACF-A05F-49BBD266A4EE}.Release|Any CPU.ActiveCfg = Release|Any CPU

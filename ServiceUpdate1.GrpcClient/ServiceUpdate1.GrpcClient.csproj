@@ -26,7 +26,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ServiceUpdate1.GrpcServer\ServiceUpdate1.GrpcServer.csproj" />
-    <ProjectReference Include="..\ServiceUpdate1.ObserverSubscriber\ServiceUpdate1.ObserverSubscriber.csproj" />
   </ItemGroup>
 
   <ItemGroup>

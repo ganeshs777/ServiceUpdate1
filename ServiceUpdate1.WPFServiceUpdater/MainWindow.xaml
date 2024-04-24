@@ -14,14 +14,14 @@
     <Grid>
         <DataGrid ItemsSource="{Binding Machines}" AutoGenerateColumns="False" Margin="5,50,5,5">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Sr. No." Binding="{Binding SerialNumber}" />
-                <DataGridTextColumn Header="Machine Name" Binding="{Binding MachineName}" />
-                <DataGridTextColumn Header="Machine IP Address" Binding="{Binding MachineIPAddress}" />
-                <DataGridTextColumn Header="Port" Binding="{Binding Port}" />
+                <DataGridTextColumn MaxWidth="100" Width ="50" Header="Sr. No." Binding="{Binding SerialNumber}" />
+                <DataGridTextColumn MaxWidth="100" Width ="50" Header="Machine Name" Binding="{Binding MachineName}" />
+                <DataGridTextColumn MaxWidth="100" Width ="50" Header="Machine IP Address" Binding="{Binding MachineIPAddress}" />
+                <DataGridTextColumn MaxWidth="100" Width ="50" Header="Port" Binding="{Binding Port}" />
                 <!--<DataGridTextColumn Header="Service Name" Binding="{Binding ServiceName}" />-->
-                <DataGridTextColumn Header="Installed Version" Binding="{Binding InstalledVersion}" />
-                <DataGridTextColumn Header="Installed File Path" Binding="{Binding InstalledFilePath}" />
-                <DataGridTextColumn Header="Latest Version" Binding="{Binding LatestVersion}" />
+                <DataGridTextColumn MaxWidth="150" Width ="100" Header="Installed Version" Binding="{Binding InstalledVersion}" />
+                <DataGridTextColumn MaxWidth="200" Width ="150" Header="Installed File Path" Binding="{Binding InstalledFilePath}" />
+                <DataGridTextColumn MaxWidth="100" Width ="50" Header="Latest Version" Binding="{Binding LatestVersion}" />
                 <DataGridTemplateColumn Header="Get Installed Version">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
