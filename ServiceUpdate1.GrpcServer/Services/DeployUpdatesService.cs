@@ -151,6 +151,20 @@ namespace ServiceUpdate1.GrpcServer.Services
             }
 
         }
+
+        public override async Task<SelfUpdateResponse > SelfUpdate(SelfUpdateReuest request, ServerCallContext context)
+        {
+            try
+            {
+                SelfUpdate selfUpdater = new(request.VersionUrl, request.UpdateUrl, request.ApplicationDirectory);
+                selfUpdater.CheckForUpdate();
+                return new SelfUpdateResponse { Message = "SUCEESS" };
+            }
+            catch (Exception)
+            {
+                return new SelfUpdateResponse { Message = "UNSUCEESS" };
+            }
+        }
     }
 
     //public class UpdateServer

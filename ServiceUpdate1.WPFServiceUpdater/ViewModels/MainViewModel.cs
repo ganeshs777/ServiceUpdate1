@@ -74,7 +74,7 @@ namespace ServiceUpdate1.WPFServiceUpdater.ViewModels
             {
                 if (_updateCommand == null)
                 {
-                    _updateCommand = new RelayCommand(param => UpdateService(param));
+                    _updateCommand = new RelayCommand(param => SelfUpdate(param));
                 }
                 return _updateCommand;
             }
@@ -170,6 +170,23 @@ namespace ServiceUpdate1.WPFServiceUpdater.ViewModels
             if (result != GRPCClientHelperResponse.SUCCESS)
                 MessageBox.Show("UNSUCCESS", "Information - Send Update Reply");
             BGColor = System.Drawing.Color.Green;
+        }
+
+        private async void SelfUpdate(object param)
+        {
+            _selectedMachine = (Machine)param;
+            var result = await ClientHelper.SelfUpdate(
+                new GrpcServer.SelfUpdateReuest
+                {
+                    VersionUrl = "https://example.com",
+                    UpdateUrl = "https://example.com",
+                    ApplicationDirectory = "net8.0\\publish"
+
+                }) ;
+            if (result != GRPCClientHelperResponse.SUCCESS)
+                MessageBox.Show("UNSUCCESS", "Information - Send Update Reply");
+            else
+                MessageBox.Show("UNSUCCESS", "Information - Send Update Reply");
         }
     }
 

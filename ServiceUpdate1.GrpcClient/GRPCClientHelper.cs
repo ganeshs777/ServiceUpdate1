@@ -182,5 +182,12 @@ namespace ServiceUpdate1.GrpcClient
                 return false;
             return true;
         }
+
+        public async Task<SelfUpdateResponse > SelfUpdate(SelfUpdateReuest request)
+        {
+            var reply = await _client.SelfUpdateAsync(request);
+            //Console.WriteLine("Service update : " + reply.Message);
+            return reply;
+        }
     }
 }
