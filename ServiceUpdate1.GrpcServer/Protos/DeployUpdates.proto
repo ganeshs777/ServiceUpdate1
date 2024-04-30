@@ -46,6 +46,7 @@ message SelfUpdateReuest {
     string VersionUrl = 1;
 	string UpdateUrl = 2;
 	string ApplicationDirectory =3;
+	bool SkipVersionCheck=4;
 }
 
 message SelfUpdateResponse {

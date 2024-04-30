@@ -11,31 +11,59 @@ namespace ServiceUpdate1.GrpcServer
         public string VersionUrl { get; private set; }
         public string UpdateUrl { get; private set; }
         public string ApplicationDirectory { get; private set; }
+        public bool SkipVersionCheck { get; private set; }
 
-        public SelfUpdate(string versionURL, string updateUrl, String applicationDirectory)
+        public SelfUpdate(string versionURL, string updateUrl, String applicationDirectory, bool skipVersionCheck)
         {
             VersionUrl = versionURL;
             UpdateUrl = updateUrl;
             ApplicationDirectory = applicationDirectory;
+            SkipVersionCheck = skipVersionCheck;
         }
         public void CheckForUpdate()
         {
             try
             {
-                string currentVersion = GetInstalledVersion();
-                string latestVersion = GetLatestVersion();
-
-                if (latestVersion != null && latestVersion != currentVersion)
+                if(SkipVersionCheck)
                 {
-                    DownloadUpdate();
-                    ReplaceFiles();
+                    //DownloadUpdate();
+                    ReplaceTestFiles();
                     RestartApplication();
                 }
+                else
+                {
+                    string currentVersion = GetInstalledVersion();
+                    string latestVersion = GetLatestVersion();
+
+                    if (latestVersion != null && latestVersion != currentVersion)
+                    {
+                        DownloadUpdate();
+                        ReplaceFiles();
+                        RestartApplication();
+                    }
+                }
+                
             }
             catch (Exception ex)
             {
                 Console.WriteLine("Error checking for updates: " + ex.Message);
             }
+        }
+
+        private void ReplaceTestFiles()
+        {
+            Copy(UpdateUrl , ApplicationDirectory, true);
+        }
+
+        void Copy(string sourceDir, string targetDir, bool overwrite=false )
+        {
+            Directory.CreateDirectory(targetDir);
+
+            foreach (var file in Directory.GetFiles(sourceDir))
+                File.Copy(file, Path.Combine(targetDir, Path.GetFileName(file)), overwrite);
+
+            foreach (var directory in Directory.GetDirectories(sourceDir))
+                Copy(directory, Path.Combine(targetDir, Path.GetFileName(directory)), true);
         }
 
         private string GetInstalledVersion()

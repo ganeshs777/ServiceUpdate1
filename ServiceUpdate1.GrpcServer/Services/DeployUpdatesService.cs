@@ -156,7 +156,7 @@ namespace ServiceUpdate1.GrpcServer.Services
         {
             try
             {
-                SelfUpdate selfUpdater = new(request.VersionUrl, request.UpdateUrl, request.ApplicationDirectory);
+                SelfUpdate selfUpdater = new(request.VersionUrl, request.UpdateUrl, request.ApplicationDirectory, request.SkipVersionCheck );
                 selfUpdater.CheckForUpdate();
                 return new SelfUpdateResponse { Message = "SUCEESS" };
             }

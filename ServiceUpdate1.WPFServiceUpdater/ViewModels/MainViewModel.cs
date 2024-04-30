@@ -23,6 +23,8 @@ namespace ServiceUpdate1.WPFServiceUpdater.ViewModels
     {
         //public ObservableCollection<ServiceModel> Services { get; set; }
         public ObservableCollection<Machine> Machines { get; set; }
+
+        private readonly SelfUpdateConfig _selfUpdateConfig;
         private Machine? _selectedMachine = null;
         private GRPCClientHelper? _clientHelper = null;
         public GRPCClientHelper ClientHelper
@@ -32,7 +34,7 @@ namespace ServiceUpdate1.WPFServiceUpdater.ViewModels
                 //if (_clientHelper == null)
                 //    _clientHelper = new GRPCClientHelper(IPAddress.Parse(_selectedMachine.MachineIPAddress),
                 //        _selectedMachine.Port, _selectedMachine.InstalledFilePath);
-                
+
                 return new GRPCClientHelper(IPAddress.Parse(_selectedMachine.MachineIPAddress),
                         _selectedMachine.Port, _selectedMachine.InstalledFilePath); ;
             }
@@ -44,6 +46,8 @@ namespace ServiceUpdate1.WPFServiceUpdater.ViewModels
             var machineCollection = new MachineCollection();
             machineCollection.LoadMachines();
             Machines = machineCollection.Machines;
+            _selfUpdateConfig = new SelfUpdateConfig();
+            _selfUpdateConfig = _selfUpdateConfig.GetSelfUpdateConfig();
 
             // Initialize Services collection and populate with dummy data
             //    Services = new ObservableCollection<ServiceModel>
@@ -62,9 +66,11 @@ namespace ServiceUpdate1.WPFServiceUpdater.ViewModels
         }
 
         private System.Drawing.Color _bGColor;
-        public System.Drawing.Color BGColor 
-        { get { return _bGColor; }
-            set { _bGColor = value; OnPropertyChanged(nameof(BGColor)); } }
+        public System.Drawing.Color BGColor
+        {
+            get { return _bGColor; }
+            set { _bGColor = value; OnPropertyChanged(nameof(BGColor)); }
+        }
 
         // Define command for the Update button
         private RelayCommand _updateCommand;
@@ -135,7 +141,7 @@ namespace ServiceUpdate1.WPFServiceUpdater.ViewModels
 
         private async void UpdateService(object param)
         {
-            BGColor = System.Drawing. Color.Gray;
+            BGColor = System.Drawing.Color.Gray;
             _selectedMachine = (Machine)param;
             var result = await ClientHelper.SendUpdateRequest();
             if (result != GRPCClientHelperResponse.SUCCESS)
@@ -149,14 +155,14 @@ namespace ServiceUpdate1.WPFServiceUpdater.ViewModels
                     MessageBox.Show("SUCCESS", "Information - Updated file.");
                 _selectedMachine.InstalledVersion = versionResult;
             }
-            BGColor = System.Drawing.Color.Green ;
+            BGColor = System.Drawing.Color.Green;
         }
 
         private async void UploadFile(object param)
         {
             _selectedMachine = (Machine)param;
             var result = await ClientHelper.UploadFile();
-            if (!result )
+            if (!result)
                 MessageBox.Show("UNSUCCESS", "Information -  File upload failed.");
             else
                 MessageBox.Show("SUCCESS", "Information - File uploaded successfully.");
@@ -175,18 +181,12 @@ namespace ServiceUpdate1.WPFServiceUpdater.ViewModels
         private async void SelfUpdate(object param)
         {
             _selectedMachine = (Machine)param;
-            var result = await ClientHelper.SelfUpdate(
-                new GrpcServer.SelfUpdateReuest
-                {
-                    VersionUrl = "https://example.com",
-                    UpdateUrl = "https://example.com",
-                    ApplicationDirectory = "net8.0\\publish"
-
-                }) ;
-            if (result != GRPCClientHelperResponse.SUCCESS)
-                MessageBox.Show("UNSUCCESS", "Information - Send Update Reply");
+            var result = await ClientHelper.SelfUpdate(_selfUpdateConfig.VersionUrl, 
+                _selfUpdateConfig.UpdateUrl, _selfUpdateConfig.ApplicationDirectory, _selfUpdateConfig.SkipVersionCheck);
+            if (result.Message == "SUCCESS")
+                MessageBox.Show("SUCCESS", "Self update successful.");
             else
-                MessageBox.Show("UNSUCCESS", "Information - Send Update Reply");
+                MessageBox.Show("UNSUCCESS", "Self update failed.");
         }
     }
 

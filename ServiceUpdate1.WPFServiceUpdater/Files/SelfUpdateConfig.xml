@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<SelfUpdateConfig>
+	<VersionUrl></VersionUrl>
+	<UpdateUrl>C:\Users\shewgan\OneDrive - Baker Hughes\Desktop\Updates\net8.0-windows</UpdateUrl>
+	<ApplicationDirectory>C:\Users\shewgan\OneDrive - Baker Hughes\Desktop\net8.0-windows</ApplicationDirectory>
+	<SkipVersionCheck>true</SkipVersionCheck>
+</SelfUpdateConfig>

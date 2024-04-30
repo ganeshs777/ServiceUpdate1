@@ -24,7 +24,7 @@ namespace ServiceUpdate1.GrpcClient
     }
     public class GRPCClientHelper
     {
-        private readonly IPAddress _iPAddress ;
+        private readonly IPAddress _iPAddress;
         int _port = 5048;
         string _filePath;
         private bool _validInputs;
@@ -127,7 +127,7 @@ namespace ServiceUpdate1.GrpcClient
                 {
                     FileName = Path.GetFileName(_filePath)
                 }
-            }) ;
+            });
 
             var buffer = new byte[ChunkSize];
             await using var readStream = File.OpenRead(_filePath);
@@ -183,9 +183,28 @@ namespace ServiceUpdate1.GrpcClient
             return true;
         }
 
-        public async Task<SelfUpdateResponse > SelfUpdate(SelfUpdateReuest request)
+        public async Task<SelfUpdateResponse> SelfUpdate()
         {
-            var reply = await _client.SelfUpdateAsync(request);
+            var reply = await _client.SelfUpdateAsync(new SelfUpdateReuest
+            {
+                VersionUrl = "https://example.com",
+                UpdateUrl = "https://example.com",
+                ApplicationDirectory = "net8.0\\publish"
+
+            });
+            //Console.WriteLine("Service update : " + reply.Message);
+            return reply;
+        }
+
+        public async Task<SelfUpdateResponse> SelfUpdate(string versionUrl, string updateUrl, string applicationDirectory, bool skipVersionCheck)
+        {
+            var reply = await _client.SelfUpdateAsync(new SelfUpdateReuest
+            {
+                VersionUrl = versionUrl,
+                UpdateUrl = updateUrl,
+                ApplicationDirectory = applicationDirectory,
+                SkipVersionCheck = skipVersionCheck
+            });
             //Console.WriteLine("Service update : " + reply.Message);
             return reply;
         }
