@@ -22,6 +22,7 @@
                 <DataGridTextColumn Header="Installed Version" Binding="{Binding InstalledVersion}" />
                 <DataGridTextColumn Header="Installed File Path" Binding="{Binding InstalledFilePath}" />
                 <DataGridTextColumn Header="Latest Version" Binding="{Binding LatestVersion}" />
+                <DataGridTextColumn Header="Target Folder Path" Binding="{Binding TargetFolderPath}" />
                 <DataGridTemplateColumn Header="Get Installed Version">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>

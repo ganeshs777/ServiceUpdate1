@@ -74,11 +74,16 @@ namespace ServiceUpdate1.GrpcServer.Services
             Directory.CreateDirectory(uploadPath);
 
             await using var writeStream = File.Create(Path.Combine(uploadPath, "data.bin"));
-
+            var SourceFolderPath = "";
+            var TargetFolderPath = "";
+            var FileName = "";
             await foreach (var message in requestStream.ReadAllAsync())
             {
                 if (message.Metadata != null)
                 {
+                    FileName = message.Metadata.FileName;
+                    SourceFolderPath = message.Metadata.SourceFolderPath;
+                    TargetFolderPath = message.Metadata.TargetFolderPath;
                     await File.WriteAllTextAsync(Path.Combine(uploadPath, "metadata.json"), message.Metadata.ToString());
                 }
                 if (message.Data != null)
@@ -86,7 +91,10 @@ namespace ServiceUpdate1.GrpcServer.Services
                     await writeStream.WriteAsync(message.Data.Memory);
                 }
             }
-
+            if (!Directory.Exists(TargetFolderPath))
+                Directory.CreateDirectory(TargetFolderPath);
+            writeStream.Close();
+            File.Move(Path.Combine(uploadPath, "data.bin"), Path.Combine(TargetFolderPath, FileName), true);
             return new UploadFileResponse { Id = uploadId };
         }
     }
