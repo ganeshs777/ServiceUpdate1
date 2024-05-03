@@ -169,6 +169,19 @@ namespace ServiceUpdate1.GrpcClient
             return true;
         }
 
+        public async Task<GRPCClientHelperResponse> XCopy()
+        {
+            var reply = await _client.XCopyAsync(new XCopyRequest 
+            {
+                SourceFolderPath  = _sourceFolderPath ,
+                TargetFolderPath  = _targetFolderPath ,
+            });
+            //Console.WriteLine("Service update : " + reply.Message);
+            if (reply.Message == "SUCCESS")
+                return GRPCClientHelperResponse.SUCCESS;
+            return GRPCClientHelperResponse.FAILED;
+        }
+
         private bool ValidateInputs()
         {
             if (_filePath == null)
