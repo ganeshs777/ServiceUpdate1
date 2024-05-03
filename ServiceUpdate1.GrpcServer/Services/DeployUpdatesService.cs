@@ -141,8 +141,8 @@ namespace ServiceUpdate1.GrpcServer.Services
         private void StartIndividualProcess(string FileName, string Arguments, bool WaitForExit = true)
         {
             ProcessStartInfo startInfo = new ProcessStartInfo();
-            startInfo.CreateNoWindow = false;
-            startInfo.UseShellExecute = false;
+            //startInfo.CreateNoWindow = false;
+            startInfo.UseShellExecute = true;
             //Give the name as Xcopy
             startInfo.FileName = FileName;
             //make the window Hidden
@@ -150,6 +150,7 @@ namespace ServiceUpdate1.GrpcServer.Services
             //Send the Source and destination as Arguments to the process
             startInfo.Arguments = Arguments;
             startInfo.WorkingDirectory= Path.GetDirectoryName(FileName);
+            //startInfo.RedirectStandardError = true;
             try
             {
                 // Start the process with the info we specified.
