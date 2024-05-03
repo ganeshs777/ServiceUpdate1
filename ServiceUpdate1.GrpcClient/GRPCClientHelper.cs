@@ -182,6 +182,18 @@ namespace ServiceUpdate1.GrpcClient
             return GRPCClientHelperResponse.FAILED;
         }
 
+        public async Task<ResponseMessage> SelfUpdate()
+        {
+            var reply = await _client.SelfUpdateAsync(new SelfUpdateRequest
+            {
+                SourceFolderPath = _sourceFolderPath,
+                TargetFolderPath = _targetFolderPath,
+                TargetFileToRun = Path.GetFileName( _filePath)
+            });
+            Console.WriteLine("Service update : " + reply.Message);
+            return reply;
+        }
+
         private bool ValidateInputs()
         {
             if (_filePath == null)

@@ -124,6 +124,19 @@ namespace ServiceUpdate1.WPFServiceUpdater.ViewModels
             }
         }
 
+        private RelayCommand _SelfUpdateCommand;
+        public ICommand SelfUpdateCommand
+        {
+            get
+            {
+                if (_SelfUpdateCommand == null)
+                {
+                    _SelfUpdateCommand = new RelayCommand(param => SelfUpdate(param));
+                }
+                return _SelfUpdateCommand;
+            }
+        }
+
         private async void GetInstalledVersionAsync(object param)
         {
             _selectedMachine = (Machine)param;
@@ -176,6 +189,16 @@ namespace ServiceUpdate1.WPFServiceUpdater.ViewModels
                 MessageBox.Show("SUCCESS", "Xcopy successfully.");
             else
                 MessageBox.Show("UNSUCCESS", "Xcopy failed.");
+        }
+
+        private async void SelfUpdate(object param)
+        {
+            _selectedMachine = (Machine)param;
+            var result = await ClientHelper.SelfUpdate();
+            if (result.Message  == "SUCCESS")
+                MessageBox.Show("SUCCESS", "Self update successfully.");
+            else
+                MessageBox.Show("UNSUCCESS", "Self update failed.");
         }
 
     }

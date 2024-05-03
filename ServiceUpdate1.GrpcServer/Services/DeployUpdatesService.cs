@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Diagnostics.Metrics;
 using System.IO;
 using System.Net;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace ServiceUpdate1.GrpcServer.Services
 {
@@ -102,7 +103,8 @@ namespace ServiceUpdate1.GrpcServer.Services
         {
             try
             {
-                ProcessXcopy(message.SourceFolderPath , message.TargetFolderPath );
+                var arg = "\"" + message.SourceFolderPath + "\"" + " " + "\"" + message.TargetFolderPath + "\"" + @" /e /y /I";
+                StartIndividualProcess("xcopy", arg);
                 return Task.FromResult(new ResponseMessage { Message = "SUCCESS" });
             }
             catch (Exception)
@@ -111,38 +113,60 @@ namespace ServiceUpdate1.GrpcServer.Services
             }
         }
 
-        /// <summary>
-        /// Method to Perform Xcopy to copy files/folders from Source machine to Target Machine
-        /// </summary>
-        /// <param name="SolutionDirectory"></param>
-        /// <param name="TargetDirectory"></param>
-        private void ProcessXcopy(string SolutionDirectory, string TargetDirectory)
+        public override async Task<ResponseMessage> SelfUpdate(SelfUpdateRequest request, ServerCallContext context)
         {
-            // Use ProcessStartInfo class
+            try
+            {
+                var arg = "\"" + request.SourceFolderPath + "\"" + " " + "\"" + request.TargetFolderPath + "\"" + @" /e /y /I";
+                StartIndividualProcess("xcopy", arg);
+            }
+            catch (Exception exp)
+            {
+                Console.WriteLine(exp.Message);
+                throw;
+            }
+            try
+            {
+                StartIndividualProcess(Path.Combine(request.TargetFolderPath, request.TargetFileToRun), "", false);
+                //Environment.Exit(0);
+                return new ResponseMessage { Message = "SUCEESS" };
+            }
+            catch (Exception exp)
+            {
+                Console.WriteLine(exp.Message);
+                return new ResponseMessage { Message = "UNSUCEESS" };
+            }
+        }
+
+        private void StartIndividualProcess(string FileName, string Arguments, bool WaitForExit = true)
+        {
             ProcessStartInfo startInfo = new ProcessStartInfo();
             startInfo.CreateNoWindow = false;
             startInfo.UseShellExecute = false;
             //Give the name as Xcopy
-            startInfo.FileName = "xcopy";
+            startInfo.FileName = FileName;
             //make the window Hidden
-            startInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            startInfo.WindowStyle = ProcessWindowStyle.Normal ;
             //Send the Source and destination as Arguments to the process
-            startInfo.Arguments = "\"" + SolutionDirectory + "\"" + " " + "\"" + TargetDirectory + "\"" + @" /e /y /I";
+            startInfo.Arguments = Arguments;
+            startInfo.WorkingDirectory= Path.GetDirectoryName(FileName);
             try
             {
                 // Start the process with the info we specified.
                 // Call WaitForExit and then the using statement will close.
                 using (Process exeProcess = Process.Start(startInfo))
                 {
-                    exeProcess.WaitForExit();
+                    if (WaitForExit)
+                    {
+                        exeProcess.WaitForExit();
+                    }
                 }
             }
             catch (Exception exp)
             {
                 Console.WriteLine(exp.Message);
-                throw exp;
+                throw;
             }
-
         }
     }
 

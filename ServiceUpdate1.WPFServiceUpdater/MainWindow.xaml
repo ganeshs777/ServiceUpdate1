@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:ServiceUpdate1.WPFServiceUpdater"
         xmlns:vm="clr-namespace:ServiceUpdate1.WPFServiceUpdater.ViewModels" d:DataContext="{d:DesignInstance Type=vm:MainViewModel}"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800"
+        Title="MainWindow" Height="768" Width="1024"
         DataContext="{StaticResource MainViewModel}">
     <!--<Window.DataContext>
         <vm:MainViewModel/>
@@ -54,6 +54,15 @@
                             <Button Content="XCopy" 
                      Command="{Binding DataContext.XCopyCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" 
                      CommandParameter="{Binding}"  />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Self Update">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Content="Self Update" 
+                                Command="{Binding DataContext.SelfUpdateCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" 
+                                CommandParameter="{Binding}"  />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

@@ -10,6 +10,7 @@ service DeployUpdatesService {
 	rpc InstallUpdates (Empty) returns (ResponseMessage);  
 	rpc UploadFile (stream UploadFileRequest) returns (UploadFileResponse);
 	rpc XCopy (XCopyRequest) returns (ResponseMessage);
+	rpc SelfUpdate (SelfUpdateRequest) returns (ResponseMessage);
 }
 
 message UploadFileRequest {
@@ -50,4 +51,10 @@ message FileMessage {
 
 message ResponseMessage {
 	string message = 1;
+}
+
+message SelfUpdateRequest{
+  string SourceFolderPath = 1;
+  string TargetFolderPath = 2;
+  string TargetFileToRun = 3;
 }
