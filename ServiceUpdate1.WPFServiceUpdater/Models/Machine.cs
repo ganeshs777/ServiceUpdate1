@@ -18,24 +18,34 @@ namespace ServiceUpdate1.WPFServiceUpdater.Models
 
         [XmlAttribute(AttributeName = "id")]
         public int SerialNumber { get; set; }
+
         [XmlElement(ElementName = "machinename")]
         public string MachineName { get; set; }
+
         [XmlElement(ElementName = "machineipaddress")]
         public string MachineIPAddress { get; set; }
+
         [XmlElement(ElementName = "port")]
         public int Port { get; set; }
+
         [XmlElement(ElementName = "servicename")]
         public string ServiceName { get; set; }
+        
         [XmlElement(ElementName = "installedversion")]
         public string InstalledVersion
         {
             get { return _installedVersion; }
             set { _installedVersion = value; OnPropertyChanged(nameof(InstalledVersion)); }
         }
+
         [XmlElement(ElementName = "latestversion")]
         public string LatestVersion { get; set; }
+
         [XmlElement(ElementName = "installedfilepath")]
         public string InstalledFilePath { get; set; }
+
+        [XmlElement(ElementName = "TargetFolderPath")]
+        public string TargetFolderPath { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged(string propertyName)

@@ -14,7 +14,7 @@ namespace ServiceUpdate1.WPFServiceUpdater.Models
         public void LoadMachines()
         {
             XmlSerializer serializer = new XmlSerializer(typeof(MachineCollection));
-            StreamReader reader = new StreamReader("C:\\repo\\ServiceUpdate1\\ServiceUpdate1.WPFServiceUpdater\\Files\\Machines.xml");
+            StreamReader reader = new StreamReader("Files\\Machines.xml");
             var machines = (MachineCollection)serializer.Deserialize(reader);
             Machines = new ObservableCollection<Machine>(machines.Machinelist);
             reader.Close();

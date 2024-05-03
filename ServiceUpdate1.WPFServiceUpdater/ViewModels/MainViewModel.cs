@@ -16,6 +16,7 @@ using ServiceUpdate1.GrpcClient;
 using System.Net;
 using System.Drawing;
 using System.Windows.Media;
+using System.IO;
 
 namespace ServiceUpdate1.WPFServiceUpdater.ViewModels
 {
@@ -32,9 +33,12 @@ namespace ServiceUpdate1.WPFServiceUpdater.ViewModels
                 //if (_clientHelper == null)
                 //    _clientHelper = new GRPCClientHelper(IPAddress.Parse(_selectedMachine.MachineIPAddress),
                 //        _selectedMachine.Port, _selectedMachine.InstalledFilePath);
-                
+
                 return new GRPCClientHelper(IPAddress.Parse(_selectedMachine.MachineIPAddress),
-                        _selectedMachine.Port, _selectedMachine.InstalledFilePath); ;
+                        _selectedMachine.Port,
+                        _selectedMachine.InstalledFilePath,
+                        _selectedMachine.LatestVersion,
+                        _selectedMachine.TargetFolderPath);
             }
         }
 
@@ -62,9 +66,11 @@ namespace ServiceUpdate1.WPFServiceUpdater.ViewModels
         }
 
         private System.Drawing.Color _bGColor;
-        public System.Drawing.Color BGColor 
-        { get { return _bGColor; }
-            set { _bGColor = value; OnPropertyChanged(nameof(BGColor)); } }
+        public System.Drawing.Color BGColor
+        {
+            get { return _bGColor; }
+            set { _bGColor = value; OnPropertyChanged(nameof(BGColor)); }
+        }
 
         // Define command for the Update button
         private RelayCommand _updateCommand;
@@ -105,6 +111,32 @@ namespace ServiceUpdate1.WPFServiceUpdater.ViewModels
             }
         }
 
+        private RelayCommand _xCopyCommand;
+        public ICommand XCopyCommand
+        {
+            get
+            {
+                if (_xCopyCommand == null)
+                {
+                    _xCopyCommand = new RelayCommand(param => XCopyFolder(param));
+                }
+                return _xCopyCommand;
+            }
+        }
+
+        private RelayCommand _SelfUpdateCommand;
+        public ICommand SelfUpdateCommand
+        {
+            get
+            {
+                if (_SelfUpdateCommand == null)
+                {
+                    _SelfUpdateCommand = new RelayCommand(param => SelfUpdate(param));
+                }
+                return _SelfUpdateCommand;
+            }
+        }
+
         private async void GetInstalledVersionAsync(object param)
         {
             _selectedMachine = (Machine)param;
@@ -122,7 +154,7 @@ namespace ServiceUpdate1.WPFServiceUpdater.ViewModels
 
         private async void UpdateService(object param)
         {
-            BGColor = System.Drawing. Color.Gray;
+            BGColor = System.Drawing.Color.Gray;
             _selectedMachine = (Machine)param;
             var result = await ClientHelper.SendUpdateRequest();
             if (result != GRPCClientHelperResponse.SUCCESS)
@@ -136,23 +168,39 @@ namespace ServiceUpdate1.WPFServiceUpdater.ViewModels
                     MessageBox.Show("SUCCESS", "Information - Updated file.");
                 _selectedMachine.InstalledVersion = versionResult;
             }
-            BGColor = System.Drawing.Color.Green ;
+            BGColor = System.Drawing.Color.Green;
         }
 
         private async void UploadFile(object param)
         {
             _selectedMachine = (Machine)param;
             var result = await ClientHelper.UploadFile();
-            if (!result )
+            if (!result)
                 MessageBox.Show("UNSUCCESS", "Information -  File upload failed.");
             else
                 MessageBox.Show("SUCCESS", "Information - File uploaded successfully.");
         }
 
-        private void Button_MouseDown(object sender, MouseButtonEventArgs e)
+        private async void XCopyFolder(object param)
         {
-
+            _selectedMachine = (Machine)param;
+            var result = await ClientHelper.XCopy();
+            if (result == GRPCClientHelperResponse.SUCCESS)
+                MessageBox.Show("SUCCESS", "Xcopy successfully.");
+            else
+                MessageBox.Show("UNSUCCESS", "Xcopy failed.");
         }
+
+        private async void SelfUpdate(object param)
+        {
+            _selectedMachine = (Machine)param;
+            var result = await ClientHelper.SelfUpdate();
+            if (result.Message  == "SUCCESS")
+                MessageBox.Show("SUCCESS", "Self update successfully.");
+            else
+                MessageBox.Show("UNSUCCESS", "Self update failed.");
+        }
+
     }
 
 }

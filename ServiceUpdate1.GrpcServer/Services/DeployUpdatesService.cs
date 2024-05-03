@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Diagnostics.Metrics;
 using System.IO;
 using System.Net;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace ServiceUpdate1.GrpcServer.Services
 {
@@ -74,11 +75,16 @@ namespace ServiceUpdate1.GrpcServer.Services
             Directory.CreateDirectory(uploadPath);
 
             await using var writeStream = File.Create(Path.Combine(uploadPath, "data.bin"));
-
+            var SourceFolderPath = "";
+            var TargetFolderPath = "";
+            var FileName = "";
             await foreach (var message in requestStream.ReadAllAsync())
             {
                 if (message.Metadata != null)
                 {
+                    FileName = message.Metadata.FileName;
+                    SourceFolderPath = message.Metadata.SourceFolderPath;
+                    TargetFolderPath = message.Metadata.TargetFolderPath;
                     await File.WriteAllTextAsync(Path.Combine(uploadPath, "metadata.json"), message.Metadata.ToString());
                 }
                 if (message.Data != null)
@@ -86,8 +92,81 @@ namespace ServiceUpdate1.GrpcServer.Services
                     await writeStream.WriteAsync(message.Data.Memory);
                 }
             }
-
+            if (!Directory.Exists(TargetFolderPath))
+                Directory.CreateDirectory(TargetFolderPath);
+            writeStream.Close();
+            File.Move(Path.Combine(uploadPath, "data.bin"), Path.Combine(TargetFolderPath, FileName), true);
             return new UploadFileResponse { Id = uploadId };
+        }
+
+        public override Task<ResponseMessage> XCopy(XCopyRequest message, ServerCallContext context)
+        {
+            try
+            {
+                var arg = "\"" + message.SourceFolderPath + "\"" + " " + "\"" + message.TargetFolderPath + "\"" + @" /e /y /I";
+                StartIndividualProcess("xcopy", arg);
+                return Task.FromResult(new ResponseMessage { Message = "SUCCESS" });
+            }
+            catch (Exception)
+            {
+                return Task.FromResult(new ResponseMessage { Message = "UNSUCCESS" });
+            }
+        }
+
+        public override async Task<ResponseMessage> SelfUpdate(SelfUpdateRequest request, ServerCallContext context)
+        {
+            try
+            {
+                var arg = "\"" + request.SourceFolderPath + "\"" + " " + "\"" + request.TargetFolderPath + "\"" + @" /e /y /I";
+                StartIndividualProcess("xcopy", arg);
+            }
+            catch (Exception exp)
+            {
+                Console.WriteLine(exp.Message);
+                throw;
+            }
+            try
+            {
+                StartIndividualProcess(Path.Combine(request.TargetFolderPath, request.TargetFileToRun), "", false);
+                //Environment.Exit(0);
+                return new ResponseMessage { Message = "SUCEESS" };
+            }
+            catch (Exception exp)
+            {
+                Console.WriteLine(exp.Message);
+                return new ResponseMessage { Message = "UNSUCEESS" };
+            }
+        }
+
+        private void StartIndividualProcess(string FileName, string Arguments, bool WaitForExit = true)
+        {
+            ProcessStartInfo startInfo = new ProcessStartInfo();
+            startInfo.CreateNoWindow = false;
+            startInfo.UseShellExecute = false;
+            //Give the name as Xcopy
+            startInfo.FileName = FileName;
+            //make the window Hidden
+            startInfo.WindowStyle = ProcessWindowStyle.Normal ;
+            //Send the Source and destination as Arguments to the process
+            startInfo.Arguments = Arguments;
+            startInfo.WorkingDirectory= Path.GetDirectoryName(FileName);
+            try
+            {
+                // Start the process with the info we specified.
+                // Call WaitForExit and then the using statement will close.
+                using (Process exeProcess = Process.Start(startInfo))
+                {
+                    if (WaitForExit)
+                    {
+                        exeProcess.WaitForExit();
+                    }
+                }
+            }
+            catch (Exception exp)
+            {
+                Console.WriteLine(exp.Message);
+                throw;
+            }
         }
     }
 

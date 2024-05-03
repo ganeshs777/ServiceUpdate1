@@ -9,15 +9,28 @@ service DeployUpdatesService {
 	rpc SendUpdates (FileMessage) returns (ResponseMessage);
 	rpc InstallUpdates (Empty) returns (ResponseMessage);  
 	rpc UploadFile (stream UploadFileRequest) returns (UploadFileResponse);
+	rpc XCopy (XCopyRequest) returns (ResponseMessage);
+	rpc SelfUpdate (SelfUpdateRequest) returns (ResponseMessage);
 }
 
 message UploadFileRequest {
-  FileMetadata metadata = 1;
+  UploadFileMetadata metadata = 1;
   bytes data = 2;
 }
 
 message FileMetadata {
   string file_name = 1;
+}
+
+message UploadFileMetadata {
+  string file_name = 1;
+  string SourceFolderPath = 2;
+  string TargetFolderPath = 3;
+}
+
+message XCopyRequest{
+  string SourceFolderPath = 1;
+  string TargetFolderPath = 2;
 }
 
 message UploadFileResponse {
@@ -38,4 +51,10 @@ message FileMessage {
 
 message ResponseMessage {
 	string message = 1;
+}
+
+message SelfUpdateRequest{
+  string SourceFolderPath = 1;
+  string TargetFolderPath = 2;
+  string TargetFileToRun = 3;
 }

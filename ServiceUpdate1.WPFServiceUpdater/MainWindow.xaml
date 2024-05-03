@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:ServiceUpdate1.WPFServiceUpdater"
         xmlns:vm="clr-namespace:ServiceUpdate1.WPFServiceUpdater.ViewModels" d:DataContext="{d:DesignInstance Type=vm:MainViewModel}"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800"
+        Title="MainWindow" Height="768" Width="1024"
         DataContext="{StaticResource MainViewModel}">
     <!--<Window.DataContext>
         <vm:MainViewModel/>
@@ -22,6 +22,7 @@
                 <DataGridTextColumn Header="Installed Version" Binding="{Binding InstalledVersion}" />
                 <DataGridTextColumn Header="Installed File Path" Binding="{Binding InstalledFilePath}" />
                 <DataGridTextColumn Header="Latest Version" Binding="{Binding LatestVersion}" />
+                <DataGridTextColumn Header="Target Folder Path" Binding="{Binding TargetFolderPath}" />
                 <DataGridTemplateColumn Header="Get Installed Version">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -44,6 +45,24 @@
                             <Button Content="Upload File" 
                      Command="{Binding DataContext.UploadFileCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" 
                      CommandParameter="{Binding}"  />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="XCopy">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Content="XCopy" 
+                     Command="{Binding DataContext.XCopyCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" 
+                     CommandParameter="{Binding}"  />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Self Update">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Content="Self Update" 
+                                Command="{Binding DataContext.SelfUpdateCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" 
+                                CommandParameter="{Binding}"  />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

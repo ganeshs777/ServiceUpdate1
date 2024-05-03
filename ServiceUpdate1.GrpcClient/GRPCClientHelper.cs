@@ -31,18 +31,23 @@ namespace ServiceUpdate1.GrpcClient
         private readonly GrpcChannel _channel;
         private readonly DeployUpdatesService.DeployUpdatesServiceClient _client;
         private const int ChunkSize = 1024 * 32; // 32 KB
+        private string _sourceFolderPath;
+        private string _targetFolderPath;
 
-        public GRPCClientHelper(IPAddress IPAddress, int Port, string FilePath)
+        public GRPCClientHelper(IPAddress IPAddress, int Port, string FilePath, string SourceFolderPath, string TargetFolderPath)
         {
             _iPAddress = IPAddress;
             _port = Port;
             _filePath = FilePath;
+            _sourceFolderPath = SourceFolderPath;
+            _targetFolderPath = TargetFolderPath;
             _validInputs = ValidateInputs();
             GrpcChannelOptions channelOptions = new GrpcChannelOptions();
             channelOptions.MaxSendMessageSize = int.MaxValue;
             channelOptions.MaxReceiveMessageSize = int.MaxValue;
             _channel = GrpcChannel.ForAddress($"http://{_iPAddress}:{_port}", channelOptions);
             _client = new DeployUpdatesServiceClient(_channel);
+
         }
 
         public async Task<GRPCClientHelperResponse> SendUpdateRequest()
@@ -128,9 +133,11 @@ namespace ServiceUpdate1.GrpcClient
             Console.WriteLine("Sending file metadata");
             await call.RequestStream.WriteAsync(new UploadFileRequest
             {
-                Metadata = new FileMetadata
+                Metadata = new UploadFileMetadata
                 {
-                    FileName = Path.GetFileName(_filePath)
+                    FileName = Path.GetFileName(_filePath),
+                    SourceFolderPath = _sourceFolderPath,
+                    TargetFolderPath = _targetFolderPath
                 }
             }) ;
 
@@ -160,6 +167,31 @@ namespace ServiceUpdate1.GrpcClient
 
             Console.WriteLine("Shutting down");
             return true;
+        }
+
+        public async Task<GRPCClientHelperResponse> XCopy()
+        {
+            var reply = await _client.XCopyAsync(new XCopyRequest 
+            {
+                SourceFolderPath  = _sourceFolderPath ,
+                TargetFolderPath  = _targetFolderPath ,
+            });
+            //Console.WriteLine("Service update : " + reply.Message);
+            if (reply.Message == "SUCCESS")
+                return GRPCClientHelperResponse.SUCCESS;
+            return GRPCClientHelperResponse.FAILED;
+        }
+
+        public async Task<ResponseMessage> SelfUpdate()
+        {
+            var reply = await _client.SelfUpdateAsync(new SelfUpdateRequest
+            {
+                SourceFolderPath = _sourceFolderPath,
+                TargetFolderPath = _targetFolderPath,
+                TargetFileToRun = Path.GetFileName( _filePath)
+            });
+            Console.WriteLine("Service update : " + reply.Message);
+            return reply;
         }
 
         private bool ValidateInputs()
