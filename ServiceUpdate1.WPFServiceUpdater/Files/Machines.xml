@@ -7,8 +7,8 @@
 		<!--<port>5048</port>-->
 		<servicename>Service1</servicename>
 		<installedversion>1.0.0</installedversion>
-		<latestversion>C:\Update Installer\V002</latestversion>
-		<installedfilepath>C:\Files To Send\bfsvc.exe</installedfilepath>
+		<latestversion>\\10.5.92.170\Update Installer\V002</latestversion>
+		<installedfilepath>C:\ServiceUpdate1\ServiceUpdate1.GrpcServer\V001\ServiceUpdate1.GrpcServer.exe</installedfilepath>
 		<TargetFolderPath>C:\ServiceUpdate1\ServiceUpdate1.GrpcServer\V002\</TargetFolderPath>
 	</machine>
 	<machine id="2">
@@ -17,8 +17,8 @@
 		<port>5048</port>
 		<servicename>Service2</servicename>
 		<installedversion>2.0.0</installedversion>
-		<latestversion>C:\Update Installer\V002</latestversion>
-		<installedfilepath>C:\Files To Send\bfsvc.exe</installedfilepath>
+		<latestversion>\\10.5.92.170\Update Installer\V002</latestversion>
+		<installedfilepath>C:\ServiceUpdate1\ServiceUpdate1.GrpcServer\V001\ServiceUpdate1.GrpcServer.exe</installedfilepath>
 		<TargetFolderPath>C:\ServiceUpdate1\ServiceUpdate1.GrpcServer\V002\</TargetFolderPath>
 	</machine>
 	<machine id="3">
@@ -28,7 +28,7 @@
 		<servicename>Service3</servicename>
 		<installedversion>3.0.0</installedversion>
 		<latestversion>C:\Update Installer\V002</latestversion>
-		<installedfilepath>C:\Users\shewgan\Downloads\git (1).zip</installedfilepath>
+		<installedfilepath>C:\ServiceUpdate1\ServiceUpdate1.GrpcServer\V001\ServiceUpdate1.GrpcServer.exe</installedfilepath>
 		<TargetFolderPath>C:\ServiceUpdate1\ServiceUpdate1.GrpcServer\V002\</TargetFolderPath>
 	</machine>
 	<machine id="4">

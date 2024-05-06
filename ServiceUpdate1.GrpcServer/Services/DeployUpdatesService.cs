@@ -23,6 +23,13 @@ namespace ServiceUpdate1.GrpcServer.Services
             _config = config;
         }
 
+        /// <summary>
+        /// Verify specified location and reply with version information
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        /// <exception cref="RpcException"></exception>
         public override Task<VersionInfo> GetLatestVersion(Empty request, ServerCallContext context)
         {
             if (!File.Exists(_filePath))
@@ -34,6 +41,13 @@ namespace ServiceUpdate1.GrpcServer.Services
             //string version = versionInfo.FileVersion;
             return Task.FromResult(new VersionInfo { Version = versionInfo.ProductVersion });
         }
+
+        /// <summary>
+        /// Sending updated file through gRPC
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
         public override Task<ResponseMessage> SendUpdates(FileMessage message, ServerCallContext context)
         {
             //string outputFilePath = AppContext.BaseDirectory + $"ServiceUpdate1.GrpcClient{counter}.exe";
@@ -55,11 +69,17 @@ namespace ServiceUpdate1.GrpcServer.Services
             }
         }
 
+        /// <summary>
+        /// It will install required updates
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
         public override Task<ResponseMessage> InstallUpdates(Empty request, ServerCallContext context)
         {
             try
             {
-                //try to install updates using _updateInstallerFilePath  file
+                //TO-DO - try to install updates using _updateInstallerFilePath  file
                 return Task.FromResult(new ResponseMessage { Message = "SUCCESS" });
             }
             catch (Exception)
@@ -68,6 +88,12 @@ namespace ServiceUpdate1.GrpcServer.Services
             }
         }
 
+        /// <summary>
+        /// Upload large files with gRPC using chunks
+        /// </summary>
+        /// <param name="requestStream"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
         public override async Task<UploadFileResponse> UploadFile(IAsyncStreamReader<UploadFileRequest> requestStream, ServerCallContext context)
         {
             var uploadId = Path.GetRandomFileName();
@@ -99,6 +125,12 @@ namespace ServiceUpdate1.GrpcServer.Services
             return new UploadFileResponse { Id = uploadId };
         }
 
+        /// <summary>
+        /// Copy specified source folder to destination folder using xcopy command
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
         public override Task<ResponseMessage> XCopy(XCopyRequest message, ServerCallContext context)
         {
             try
@@ -113,6 +145,12 @@ namespace ServiceUpdate1.GrpcServer.Services
             }
         }
 
+        /// <summary>
+        /// Copy specified version folder to application root dircetory (specified in message) and start another updated instance
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
         public override async Task<ResponseMessage> SelfUpdate(SelfUpdateRequest request, ServerCallContext context)
         {
             try
@@ -129,20 +167,20 @@ namespace ServiceUpdate1.GrpcServer.Services
             {
                 StartIndividualProcess(Path.Combine(request.TargetFolderPath, request.TargetFileToRun), "", false);
                 //Environment.Exit(0);
-                return new ResponseMessage { Message = "SUCEESS" };
+                return new ResponseMessage { Message = "SUCCESS" };
             }
             catch (Exception exp)
             {
                 Console.WriteLine(exp.Message);
-                return new ResponseMessage { Message = "UNSUCEESS" };
+                return new ResponseMessage { Message = "UNSUCCESS" };
             }
         }
 
         private void StartIndividualProcess(string FileName, string Arguments, bool WaitForExit = true)
         {
             ProcessStartInfo startInfo = new ProcessStartInfo();
-            startInfo.CreateNoWindow = false;
-            startInfo.UseShellExecute = false;
+            //startInfo.CreateNoWindow = false;
+            startInfo.UseShellExecute = true;
             //Give the name as Xcopy
             startInfo.FileName = FileName;
             //make the window Hidden
@@ -150,6 +188,7 @@ namespace ServiceUpdate1.GrpcServer.Services
             //Send the Source and destination as Arguments to the process
             startInfo.Arguments = Arguments;
             startInfo.WorkingDirectory= Path.GetDirectoryName(FileName);
+            //startInfo.RedirectStandardError = true;
             try
             {
                 // Start the process with the info we specified.
