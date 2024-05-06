@@ -20,10 +20,6 @@ namespace ServiceUpdate1.WPFServiceUpdater.ViewModels
         {
             get
             {
-                //if (_clientHelper == null)
-                //    _clientHelper = new GRPCClientHelper(IPAddress.Parse(_selectedMachine.MachineIPAddress),
-                //        _selectedMachine.Port, _selectedMachine.InstalledFilePath);
-
                 return new GRPCClientHelper(IPAddress.Parse(_selectedMachine.MachineIPAddress),
                         _selectedMachine.Port,
                         _selectedMachine.InstalledFilePath,
@@ -38,7 +34,6 @@ namespace ServiceUpdate1.WPFServiceUpdater.ViewModels
             var machineCollection = new MachineCollection();
             machineCollection.LoadMachines();
             Machines = machineCollection.Machines;
-
             // Initialize Services collection and populate with dummy data
             //    Services = new ObservableCollection<ServiceModel>
             //{
@@ -166,7 +161,6 @@ namespace ServiceUpdate1.WPFServiceUpdater.ViewModels
         {
             if (ConvertDataGridrowToMachineObject(param))
             {
-                _selectedMachine = (Machine)param;
                 MethodName = "GetInstalledVersionAsync";
                 MethodParameters = "Parameters : IP Address : " + _selectedMachine.MachineIPAddress +
                     "\n File Path : " + _selectedMachine.InstalledFilePath;
@@ -212,7 +206,6 @@ namespace ServiceUpdate1.WPFServiceUpdater.ViewModels
         {
             if (ConvertDataGridrowToMachineObject(param))
             {
-                _selectedMachine = (Machine)param;
                 MethodName = "UploadFile";
                 MethodParameters = "Parameters : IP Address : " + _selectedMachine.MachineIPAddress +
                     "\n File Path : " + _selectedMachine.InstalledFilePath;
@@ -228,7 +221,6 @@ namespace ServiceUpdate1.WPFServiceUpdater.ViewModels
         {
             if (ConvertDataGridrowToMachineObject(param))
             {
-                _selectedMachine = (Machine)param;
                 MethodName = "XCopyFolder";
                 MethodParameters = "Parameters : IP Address : " + _selectedMachine.MachineIPAddress +
                     "\nSource Folder : " + _selectedMachine.LatestVersion +
@@ -246,7 +238,6 @@ namespace ServiceUpdate1.WPFServiceUpdater.ViewModels
         {
             if (ConvertDataGridrowToMachineObject(param))
             {
-                _selectedMachine = (Machine)param;
                 MethodName = "SelfUpdate";
                 MethodParameters = "Parameters : IP Address : " + _selectedMachine.MachineIPAddress +
                     "\nSource Folder : " + _selectedMachine.LatestVersion +
