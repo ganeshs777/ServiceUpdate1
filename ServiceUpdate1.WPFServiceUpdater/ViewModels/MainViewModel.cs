@@ -1,22 +1,12 @@
-﻿using ServiceUpdate1.WPFServiceUpdater.Lib;
+﻿using ServiceUpdate1.GrpcClient;
+using ServiceUpdate1.WPFServiceUpdater.Lib;
 //using GalaSoft.MvvmLight.CommandWpf;
 using ServiceUpdate1.WPFServiceUpdater.Models;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
-using System.Windows;
-using System.Windows.Input;
-using ServiceUpdate1.GrpcClient;
 using System.Net;
-using System.Drawing;
-using System.Windows.Media;
-using System.IO;
+using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace ServiceUpdate1.WPFServiceUpdater.ViewModels
 {
@@ -59,6 +49,33 @@ namespace ServiceUpdate1.WPFServiceUpdater.ViewModels
             //};
         }
 
+        private string _gRPCMethodResponse;
+        public string gRPCMethodResponse
+        {
+            get { return _gRPCMethodResponse; }
+            set { _gRPCMethodResponse = value; OnPropertyChanged(nameof(gRPCMethodResponse)); }
+        }
+
+        private string _methodName;
+        public string MethodName
+        {
+            get { return _methodName; }
+            set { _methodName = value; OnPropertyChanged(nameof(MethodName)); }
+        }
+
+        private string _methodParameters;
+        public string MethodParameters
+        {
+            get { return _methodParameters; }
+            set { _methodParameters = value; OnPropertyChanged(nameof(MethodParameters)); }
+        }
+
+        private string _methodError;
+        public string MethodError
+        {
+            get { return _methodError; }
+            set { _methodError = value; OnPropertyChanged(nameof(MethodError)); }
+        }
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged(string propertyName)
         {
@@ -137,68 +154,110 @@ namespace ServiceUpdate1.WPFServiceUpdater.ViewModels
             }
         }
 
+        private bool ConvertDataGridrowToMachineObject(object param)
+        {
+            if (param is not Machine)
+                return false;
+            _selectedMachine = (Machine)param;
+            return true;
+        }
+
         private async void GetInstalledVersionAsync(object param)
         {
-            _selectedMachine = (Machine)param;
-            //byte[] bytes = Encoding.ASCII.GetBytes(a.MachineIPAddress);
-            //Console.WriteLine(a.MachineName );
-            //var address = System.Net.IPAddress.Parse(_selectedMachine.MachineIPAddress);
-            //GRPCClientHelper clientHelper = new GRPCClientHelper(System.Net.IPAddress.Parse(_selectedMachine.MachineIPAddress),
-            //    _selectedMachine.Port , _selectedMachine.InstalledFilePath );
-            var result = await ClientHelper.GetFileInstalledVersion();
-            if (result == "UNSUCCESS")
-                MessageBox.Show("UNSUCCESS", "Information - Version Info Reply");
-            else
-                _selectedMachine.InstalledVersion = result;
+            if (ConvertDataGridrowToMachineObject(param))
+            {
+                _selectedMachine = (Machine)param;
+                MethodName = "GetInstalledVersionAsync";
+                MethodParameters = "Parameters : IP Address : " + _selectedMachine.MachineIPAddress +
+                    "\n File Path : " + _selectedMachine.InstalledFilePath;
+                //byte[] bytes = Encoding.ASCII.GetBytes(a.MachineIPAddress);
+                //Console.WriteLine(a.MachineName );
+                //var address = System.Net.IPAddress.Parse(_selectedMachine.MachineIPAddress);
+                //GRPCClientHelper clientHelper = new GRPCClientHelper(System.Net.IPAddress.Parse(_selectedMachine.MachineIPAddress),
+                //    _selectedMachine.Port , _selectedMachine.InstalledFilePath );
+                var result = await ClientHelper.GetFileInstalledVersion();
+                gRPCMethodResponse = result;
+                MethodError = "";
+                if (result == "UNSUCCESS")
+                    MethodError = result;
+                else
+                    _selectedMachine.InstalledVersion = result; 
+            }
         }
 
         private async void UpdateService(object param)
         {
-            BGColor = System.Drawing.Color.Gray;
-            _selectedMachine = (Machine)param;
-            var result = await ClientHelper.SendUpdateRequest();
-            if (result != GRPCClientHelperResponse.SUCCESS)
-                MessageBox.Show("UNSUCCESS", "Information - Send Update Reply");
-            else
+            if(ConvertDataGridrowToMachineObject(param))
             {
-                var versionResult = await ClientHelper.GetFileInstalledVersion();
-                if (versionResult == "UNSUCCESS")
-                    MessageBox.Show("UNSUCCESS", "Information - Version Info Reply");
+                MethodName = "UpdateService";
+                MethodParameters = "Parameters : IP Address : " + _selectedMachine.MachineIPAddress +
+                    "\n File Path : " + _selectedMachine.InstalledFilePath;
+                var result = await ClientHelper.SendUpdateRequest();
+                gRPCMethodResponse = result.ToString();
+                MethodError = "";
+                if (result != GRPCClientHelperResponse.SUCCESS)
+                    MethodError = "UNSUCCESS";
                 else
-                    MessageBox.Show("SUCCESS", "Information - Updated file.");
-                _selectedMachine.InstalledVersion = versionResult;
+                {
+                    var versionResult = await ClientHelper.GetFileInstalledVersion();
+                    if (versionResult == "UNSUCCESS")
+                        MethodError = "UNSUCCESS";
+                    else
+                        _selectedMachine.InstalledVersion = versionResult;
+                }
             }
-            BGColor = System.Drawing.Color.Green;
         }
 
         private async void UploadFile(object param)
         {
-            _selectedMachine = (Machine)param;
-            var result = await ClientHelper.UploadFile();
-            if (!result)
-                MessageBox.Show("UNSUCCESS", "Information -  File upload failed.");
-            else
-                MessageBox.Show("SUCCESS", "Information - File uploaded successfully.");
+            if (ConvertDataGridrowToMachineObject(param))
+            {
+                _selectedMachine = (Machine)param;
+                MethodName = "UploadFile";
+                MethodParameters = "Parameters : IP Address : " + _selectedMachine.MachineIPAddress +
+                    "\n File Path : " + _selectedMachine.InstalledFilePath;
+                var result = await ClientHelper.UploadFile();
+                gRPCMethodResponse = result.ToString();
+                MethodError = "";
+                if (!result)
+                    MethodError = "UNSUCCESS";
+            }
         }
 
         private async void XCopyFolder(object param)
         {
-            _selectedMachine = (Machine)param;
-            var result = await ClientHelper.XCopy();
-            if (result == GRPCClientHelperResponse.SUCCESS)
-                MessageBox.Show("SUCCESS", "Xcopy successfully.");
-            else
-                MessageBox.Show("UNSUCCESS", "Xcopy failed.");
+            if (ConvertDataGridrowToMachineObject(param))
+            {
+                _selectedMachine = (Machine)param;
+                MethodName = "XCopyFolder";
+                MethodParameters = "Parameters : IP Address : " + _selectedMachine.MachineIPAddress +
+                    "\nSource Folder : " + _selectedMachine.LatestVersion +
+                    "\nDestination Folder : " + _selectedMachine.TargetFolderPath;
+                var result = await ClientHelper.XCopy();
+                gRPCMethodResponse = result.ToString();
+                if (result == GRPCClientHelperResponse.SUCCESS)
+                    MethodError = "";
+                else
+                    MethodError = "UNSUCCESS"; 
+            }
         }
 
         private async void SelfUpdate(object param)
         {
-            _selectedMachine = (Machine)param;
-            var result = await ClientHelper.SelfUpdate();
-            if (result.Message  == "SUCCESS")
-                MessageBox.Show("SUCCESS", "Self update successfully.");
-            else
-                MessageBox.Show("UNSUCCESS", "Self update failed.");
+            if (ConvertDataGridrowToMachineObject(param))
+            {
+                _selectedMachine = (Machine)param;
+                MethodName = "SelfUpdate";
+                MethodParameters = "Parameters : IP Address : " + _selectedMachine.MachineIPAddress +
+                    "\nSource Folder : " + _selectedMachine.LatestVersion +
+                    "\nDestination Folder : " + _selectedMachine.TargetFolderPath;
+                var result = await ClientHelper.SelfUpdate();
+                gRPCMethodResponse = result.Message;
+                if (result.Message == "SUCCESS")
+                    MethodError = "";
+                else
+                    MethodError = "UNSUCCESS"; 
+            }
         }
 
     }

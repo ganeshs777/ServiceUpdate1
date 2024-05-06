@@ -11,8 +11,18 @@
     <!--<Window.DataContext>
         <vm:MainViewModel/>
     </Window.DataContext>-->
+    <Window.Resources>
+        <Style TargetType="TextBlock" x:Key="TextWrapper">
+            <Setter Property="TextWrapping" Value="Wrap" />
+        </Style>
+    </Window.Resources>
     <Grid>
-        <DataGrid ItemsSource="{Binding Machines}" AutoGenerateColumns="False" Margin="5,50,5,5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="500"/>
+            <RowDefinition Height="150"/>
+            <RowDefinition Height="5"/>
+        </Grid.RowDefinitions>
+        <DataGrid Grid.Row="0"  ItemsSource="{Binding Machines}" AutoGenerateColumns="False" Margin="5,5,5,5">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Sr. No." Binding="{Binding SerialNumber}" />
                 <DataGridTextColumn Header="Machine Name" Binding="{Binding MachineName}" />
@@ -30,10 +40,10 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="Install Updates">
+                <DataGridTemplateColumn Header="Update Service">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Content="Install Updates" 
+                            <Button Content="Update Service" 
                                     Command="{Binding DataContext.UpdateCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" 
                                     CommandParameter="{Binding}"  />
                         </DataTemplate>
@@ -68,5 +78,33 @@
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition  />
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0" Grid.ColumnSpan="2" Margin="0,0,73,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="600"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="25"/>
+                    <RowDefinition Height="55"/>
+                    <RowDefinition Height="25"/>
+                    <RowDefinition Height="25"/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="1" Text="Method Call" Name="TextBlock1" Margin="0,0,0,0"/>
+                <TextBlock Grid.Row="0" Grid.Column="2" Text="{Binding Path=MethodName}" Name="TextBlock11" Margin="20,0,-181,0"/>
+                <TextBlock Grid.Row="1" Grid.Column="1" Text="Method Parameters" Name="TextBlock2" Margin="0,0,0,0"/>
+                <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding Path=MethodParameters}" Name="TextBlock21" Margin="20,0,-181,0"
+                           Style="{StaticResource ResourceKey=TextWrapper }"/>
+                <TextBlock Grid.Row="2" Grid.Column="1" Text="Method Response" Name="TextBlock3" Margin="0,0,0,0" />
+                <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding Path=gRPCMethodResponse}" Name="TextBlock31" Margin="20,0,-181,0"/>
+                <TextBlock Grid.Row="3" Grid.Column="1" Text="Error If Any" Name="TextBlock4" Margin="0,0,0,0"/>
+                <TextBlock Grid.Row="3" Grid.Column="2" Text="{Binding Path=MethodError}" Name="TextBlock41" Margin="20,0,-181,0"/>
+            </Grid>
+        </Grid>
     </Grid>
 </Window>
