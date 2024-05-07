@@ -5,10 +5,10 @@ option csharp_namespace = "ServiceUpdate1.GrpcServer";
 package DeployUpdates;
 
 service DeployUpdatesService {
-	rpc GetLatestVersion (Empty) returns (VersionInfo);  
+	rpc GetLatestVersion (Empty) returns (ResponseMessage);  
 	rpc SendUpdates (FileMessage) returns (ResponseMessage);
 	rpc InstallUpdates (Empty) returns (ResponseMessage);  
-	rpc UploadFile (stream UploadFileRequest) returns (UploadFileResponse);
+	rpc UploadFile (stream UploadFileRequest) returns (ResponseMessage);
 	rpc XCopy (XCopyRequest) returns (ResponseMessage);
 	rpc SelfUpdate (SelfUpdateRequest) returns (ResponseMessage);
 }
@@ -50,7 +50,9 @@ message FileMessage {
 }
 
 message ResponseMessage {
-	string message = 1;
+	bool success = 1;
+	string message = 2;
+	string error = 3;
 }
 
 message SelfUpdateRequest{
