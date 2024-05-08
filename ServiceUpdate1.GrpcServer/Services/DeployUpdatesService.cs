@@ -1,19 +1,13 @@
 ﻿using Google.Protobuf;
 using Grpc.Core;
 using System.Diagnostics;
-using System.Diagnostics.Metrics;
-using System.IO;
-using System.Net;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace ServiceUpdate1.GrpcServer.Services
 {
     public class DeployUpdatesService : GrpcServer.DeployUpdatesService.DeployUpdatesServiceBase
     {
-        private readonly string _currentVersion = "1.1.0"; // Example: Simulate a newer version
-        private string _filePath = @"C:\Windows\regedit.exe"; // Example: Simulate a newer version
+        private string _filePath = "";
         private string _updateInstallerFolderPath = @"C:\Update Installer";
-
         private readonly ILogger _logger;
         private readonly IConfiguration _config;
 
@@ -30,16 +24,11 @@ namespace ServiceUpdate1.GrpcServer.Services
         /// <param name="context"></param>
         /// <returns></returns>
         /// <exception cref="RpcException"></exception>
-        public override Task<VersionInfo> GetLatestVersion(Empty request, ServerCallContext context)
+        public override Task<ResponseMessage> GetLatestVersion(Empty request, ServerCallContext context)
         {
-            if (!File.Exists(_filePath))
-            {
-                const string msg = "Service is not installed or not at specified location";
-                throw new RpcException(new Status(StatusCode.FailedPrecondition, msg));
-            }
-            var versionInfo = FileVersionInfo.GetVersionInfo(_filePath);
-            //string version = versionInfo.FileVersion;
-            return Task.FromResult(new VersionInfo { Version = versionInfo.ProductVersion });
+            var filePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            var versionInfo = FileVersionInfo.GetVersionInfo(filePath);
+            return ReturnResult(true, versionInfo.ProductVersion, "");
         }
 
         /// <summary>
@@ -61,11 +50,11 @@ namespace ServiceUpdate1.GrpcServer.Services
                 {
                     byteString.WriteTo(outputStream);
                 }
-                return Task.FromResult(new ResponseMessage { Message = "SUCCESS" });
+                return ReturnResult(true, _filePath, "");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return Task.FromResult(new ResponseMessage { Message = "UNSUCCESS" });
+                return ReturnResult(false, _filePath, ex.Message);
             }
         }
 
@@ -80,11 +69,11 @@ namespace ServiceUpdate1.GrpcServer.Services
             try
             {
                 //TO-DO - try to install updates using _updateInstallerFilePath  file
-                return Task.FromResult(new ResponseMessage { Message = "SUCCESS" });
+                return ReturnResult(true, _filePath, "");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return Task.FromResult(new ResponseMessage { Message = "UNSUCCESS" });
+                return ReturnResult(false, _filePath, ex.Message);
             }
         }
 
@@ -94,35 +83,42 @@ namespace ServiceUpdate1.GrpcServer.Services
         /// <param name="requestStream"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        public override async Task<UploadFileResponse> UploadFile(IAsyncStreamReader<UploadFileRequest> requestStream, ServerCallContext context)
+        public override async Task<ResponseMessage> UploadFile(IAsyncStreamReader<UploadFileRequest> requestStream, ServerCallContext context)
         {
-            var uploadId = Path.GetRandomFileName();
-            var uploadPath = Path.Combine(_config["StoredFilesPath"]!, uploadId);
-            Directory.CreateDirectory(uploadPath);
-
-            await using var writeStream = File.Create(Path.Combine(uploadPath, "data.bin"));
-            var SourceFolderPath = "";
-            var TargetFolderPath = "";
-            var FileName = "";
-            await foreach (var message in requestStream.ReadAllAsync())
+            try
             {
-                if (message.Metadata != null)
+                var uploadId = Path.GetRandomFileName();
+                var uploadPath = Path.Combine(_config["StoredFilesPath"]!, uploadId);
+                Directory.CreateDirectory(uploadPath);
+
+                await using var writeStream = File.Create(Path.Combine(uploadPath, "data.bin"));
+                var SourceFolderPath = "";
+                var TargetFolderPath = "";
+                var FileName = "";
+                await foreach (var message in requestStream.ReadAllAsync())
                 {
-                    FileName = message.Metadata.FileName;
-                    SourceFolderPath = message.Metadata.SourceFolderPath;
-                    TargetFolderPath = message.Metadata.TargetFolderPath;
-                    await File.WriteAllTextAsync(Path.Combine(uploadPath, "metadata.json"), message.Metadata.ToString());
+                    if (message.Metadata != null)
+                    {
+                        FileName = message.Metadata.FileName;
+                        SourceFolderPath = message.Metadata.SourceFolderPath;
+                        TargetFolderPath = message.Metadata.TargetFolderPath;
+                        await File.WriteAllTextAsync(Path.Combine(uploadPath, "metadata.json"), message.Metadata.ToString());
+                    }
+                    if (message.Data != null)
+                    {
+                        await writeStream.WriteAsync(message.Data.Memory);
+                    }
                 }
-                if (message.Data != null)
-                {
-                    await writeStream.WriteAsync(message.Data.Memory);
-                }
+                if (!Directory.Exists(TargetFolderPath))
+                    Directory.CreateDirectory(TargetFolderPath);
+                writeStream.Close();
+                File.Move(Path.Combine(uploadPath, "data.bin"), Path.Combine(TargetFolderPath, FileName), true);
+                return ReturnResult(true, Path.Combine(TargetFolderPath, FileName), "").Result;
             }
-            if (!Directory.Exists(TargetFolderPath))
-                Directory.CreateDirectory(TargetFolderPath);
-            writeStream.Close();
-            File.Move(Path.Combine(uploadPath, "data.bin"), Path.Combine(TargetFolderPath, FileName), true);
-            return new UploadFileResponse { Id = uploadId };
+            catch (Exception ex)
+            {
+                return ReturnResult(false, "Error", ex.Message).Result;
+            }
         }
 
         /// <summary>
@@ -137,11 +133,11 @@ namespace ServiceUpdate1.GrpcServer.Services
             {
                 var arg = "\"" + message.SourceFolderPath + "\"" + " " + "\"" + message.TargetFolderPath + "\"" + @" /e /y /I";
                 StartIndividualProcess("xcopy", arg);
-                return Task.FromResult(new ResponseMessage { Message = "SUCCESS" });
+                return ReturnResult(true, $"Copied files from '{message.SourceFolderPath}' to '{message.TargetFolderPath}'", "");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return Task.FromResult(new ResponseMessage { Message = "UNSUCCESS" });
+                return ReturnResult(false, "Error", ex.Message);
             }
         }
 
@@ -166,16 +162,38 @@ namespace ServiceUpdate1.GrpcServer.Services
             try
             {
                 StartIndividualProcess(Path.Combine(request.TargetFolderPath, request.TargetFileToRun), "", false);
-                //Environment.Exit(0);
-                return new ResponseMessage { Message = "SUCCESS" };
+                //TO-DO - Environment.Exit(0);
+                return ReturnResult(true, $"Copied files from '{request.SourceFolderPath}' to '{request.TargetFolderPath}'", "").Result;
             }
-            catch (Exception exp)
+            catch (Exception ex)
             {
-                Console.WriteLine(exp.Message);
-                return new ResponseMessage { Message = "UNSUCCESS" };
+                return ReturnResult(false, "Error", ex.Message).Result ;
             }
         }
 
+        /// <summary>
+        /// One method to return result
+        /// </summary>
+        /// <param name="success">true if succeed</param>
+        /// <param name="message">response message</param>
+        /// <param name="error">error if any</param>
+        /// <returns></returns>
+        private async Task<ResponseMessage> ReturnResult(bool success, string message, string error)
+        {
+            return (new ResponseMessage
+            {
+                Success = success,
+                Message = message,
+                Error = error
+            });
+        }
+
+        /// <summary>
+        /// Starts a process with separate window
+        /// </summary>
+        /// <param name="FileName">Name of the file to execute</param>
+        /// <param name="Arguments">Required list of arguments</param>
+        /// <param name="WaitForExit">Whether to wait till exit</param>
         private void StartIndividualProcess(string FileName, string Arguments, bool WaitForExit = true)
         {
             ProcessStartInfo startInfo = new ProcessStartInfo();
@@ -184,10 +202,10 @@ namespace ServiceUpdate1.GrpcServer.Services
             //Give the name as Xcopy
             startInfo.FileName = FileName;
             //make the window Hidden
-            startInfo.WindowStyle = ProcessWindowStyle.Normal ;
+            startInfo.WindowStyle = ProcessWindowStyle.Normal;
             //Send the Source and destination as Arguments to the process
             startInfo.Arguments = Arguments;
-            startInfo.WorkingDirectory= Path.GetDirectoryName(FileName);
+            startInfo.WorkingDirectory = Path.GetDirectoryName(FileName);
             //startInfo.RedirectStandardError = true;
             try
             {
@@ -208,19 +226,4 @@ namespace ServiceUpdate1.GrpcServer.Services
             }
         }
     }
-
-    //public class UpdateServer
-    //{
-    //    public static void Main(string[] args)
-    //    {
-    //        var server = new Server
-    //        {
-    //            Services = { GrpcServer.DeployUpdatesService.BindService(new DeployUpdatesService()) },
-    //            Ports = { new ServerPort("10.5.92.167", 5000, ServerCredentials.Insecure) }
-    //        };
-    //        server.Start();
-    //        Console.WriteLine("Update server listening on port 50051");
-    //        Console.ReadLine();
-    //    }
-    //}
 }

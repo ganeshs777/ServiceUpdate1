@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:ServiceUpdate1.WPFServiceUpdater"
         xmlns:vm="clr-namespace:ServiceUpdate1.WPFServiceUpdater.ViewModels" d:DataContext="{d:DesignInstance Type=vm:MainViewModel}"
         mc:Ignorable="d"
-        Title="MainWindow" Height="768" Width="1024"
+        Title="MainWindow" Height="480" Width="1368"
         DataContext="{StaticResource MainViewModel}">
     <!--<Window.DataContext>
         <vm:MainViewModel/>
@@ -15,14 +15,69 @@
         <Style TargetType="TextBlock" x:Key="TextWrapper">
             <Setter Property="TextWrapping" Value="Wrap" />
         </Style>
+        <Style x:Key="FocusVisual">
+            <Setter Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Rectangle Margin="2" StrokeDashArray="1 2" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" SnapsToDevicePixels="true" StrokeThickness="1"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <SolidColorBrush x:Key="Button.Static.Background" Color="#FFDDDDDD"/>
+        <SolidColorBrush x:Key="Button.Static.Border" Color="#FF707070"/>
+        <SolidColorBrush x:Key="Button.MouseOver.Background" Color="#FFBEE6FD"/>
+        <SolidColorBrush x:Key="Button.MouseOver.Border" Color="#FF3C7FB1"/>
+        <SolidColorBrush x:Key="Button.Pressed.Background" Color="#FFC4E5F6"/>
+        <SolidColorBrush x:Key="Button.Pressed.Border" Color="#FF2C628B"/>
+        <SolidColorBrush x:Key="Button.Disabled.Background" Color="#FFF4F4F4"/>
+        <SolidColorBrush x:Key="Button.Disabled.Border" Color="#FFADB2B5"/>
+        <SolidColorBrush x:Key="Button.Disabled.Foreground" Color="#FF838383"/>
+        <Style x:Key="ButtonStyle1" TargetType="{x:Type Button}">
+            <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
+            <Setter Property="Background" Value="{StaticResource Button.Static.Background}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Button.Static.Border}"/>
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="true">
+                            <ContentPresenter x:Name="contentPresenter" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsDefaulted" Value="true">
+                                <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter Property="Background" TargetName="border" Value="{StaticResource Button.MouseOver.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.MouseOver.Border}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="true">
+                                <Setter Property="Background" TargetName="border" Value="{StaticResource Button.Pressed.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.Pressed.Border}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Background" TargetName="border" Value="{StaticResource Button.Disabled.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.Disabled.Border}"/>
+                                <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="{StaticResource Button.Disabled.Foreground}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="500"/>
-            <RowDefinition Height="150"/>
-            <RowDefinition Height="5"/>
+            <RowDefinition Height="4*"/>
+            <RowDefinition Height="2.5*"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <DataGrid Grid.Row="0"  ItemsSource="{Binding Machines}" AutoGenerateColumns="False" Margin="5,5,5,5">
+        <DataGrid Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" ItemsSource="{Binding Machines}" SelectedItem="{Binding SelectedMachine, TargetNullValue={x:Static CollectionView.NewItemPlaceholder}}" AutoGenerateColumns="False" Margin="5,5,5,5">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Sr. No." Binding="{Binding SerialNumber}" />
                 <DataGridTextColumn Header="Machine Name" Binding="{Binding MachineName}" />
@@ -33,52 +88,9 @@
                 <DataGridTextColumn Header="Installed File Path" Binding="{Binding InstalledFilePath}" />
                 <DataGridTextColumn Header="Latest Version" Binding="{Binding LatestVersion}" />
                 <DataGridTextColumn Header="Target Folder Path" Binding="{Binding TargetFolderPath}" />
-                <DataGridTemplateColumn Header="Get Installed Version">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Button Content="Get Installed Version" Command="{Binding DataContext.GetInstalledVersionCommand, RelativeSource={RelativeSource AncestorType=DataGrid }}" CommandParameter="{Binding}"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="Update Service">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Button Content="Update Service" 
-                                    Command="{Binding DataContext.UpdateCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" 
-                                    CommandParameter="{Binding}"  />
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="Upload File">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Button Content="Upload File" 
-                     Command="{Binding DataContext.UploadFileCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" 
-                     CommandParameter="{Binding}"  />
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="XCopy">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Button Content="XCopy" 
-                     Command="{Binding DataContext.XCopyCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" 
-                     CommandParameter="{Binding}"  />
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="Self Update">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Button Content="Self Update" 
-                                Command="{Binding DataContext.SelfUpdateCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" 
-                                CommandParameter="{Binding}"  />
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="1" HorizontalAlignment="Center" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition  />
@@ -91,20 +103,27 @@
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="25"/>
-                    <RowDefinition Height="55"/>
+                    <RowDefinition Height="70"/>
                     <RowDefinition Height="25"/>
                     <RowDefinition Height="25"/>
                 </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" Grid.Column="1" Text="Method Call" Name="TextBlock1" Margin="0,0,0,0"/>
-                <TextBlock Grid.Row="0" Grid.Column="2" Text="{Binding Path=MethodName}" Name="TextBlock11" Margin="20,0,-181,0"/>
-                <TextBlock Grid.Row="1" Grid.Column="1" Text="Method Parameters" Name="TextBlock2" Margin="0,0,0,0"/>
-                <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding Path=MethodParameters}" Name="TextBlock21" Margin="20,0,-181,0"
+                <TextBlock Grid.Row="0" Grid.Column="1" Text="Method" Name="TextBlock1" Margin="0,0,0,0"/>
+                <TextBlock Grid.Row="0" Grid.Column="2" Text="{Binding Path=MethodName}" Name="TextBlock11" Margin="20,0"/>
+                <TextBlock Grid.Row="1" Grid.Column="1" Text="Parameters" Name="TextBlock2" Margin="0,0,0,0"/>
+                <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding Path=Parameters}" Name="TextBlock21" Margin="20,0"
                            Style="{StaticResource ResourceKey=TextWrapper }"/>
-                <TextBlock Grid.Row="2" Grid.Column="1" Text="Method Response" Name="TextBlock3" Margin="0,0,0,0" />
-                <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding Path=gRPCMethodResponse}" Name="TextBlock31" Margin="20,0,-181,0"/>
-                <TextBlock Grid.Row="3" Grid.Column="1" Text="Error If Any" Name="TextBlock4" Margin="0,0,0,0"/>
-                <TextBlock Grid.Row="3" Grid.Column="2" Text="{Binding Path=MethodError}" Name="TextBlock41" Margin="20,0,-181,0"/>
+                <TextBlock Grid.Row="2" Grid.Column="1" Text="Response" Name="TextBlock3" Margin="0,0,0,0" />
+                <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding Path=Response}" Foreground="Green" Name="TextBlock31" Margin="20,0"/>
+                <TextBlock Grid.Row="3" Grid.Column="1" Text="Error" Name="TextBlock4" Margin="0,0,0,0"/>
+                <TextBlock Grid.Row="3" Grid.Column="2" Text="{Binding Path=Error}" Foreground="Red" Name="TextBlock41" Margin="20,0"/>
             </Grid>
         </Grid>
+        <WrapPanel Grid.Row="2" Margin="5,5,5,5" HorizontalAlignment="Center" >
+            <Button Style="{DynamicResource ButtonStyle1}" Width="Auto" Margin="10,5,0,-5" Content="Get Installed Version" Command="{Binding GetInstalledVersionCommand}" />
+            <Button Style="{DynamicResource ButtonStyle1}" Width="Auto" Margin="10,5,0,-5" Content="Update Service" Command="{Binding UpdateCommand}" />
+            <Button Style="{DynamicResource ButtonStyle1}" Width="Auto" Margin="10,5,0,-5" Content="Upload File" Command="{Binding UploadFileCommand}" />
+            <Button Style="{DynamicResource ButtonStyle1}" Width="Auto" Margin="10,5,0,-5" Content="XCopy" Command="{Binding XCopyCommand}" />
+            <Button Style="{DynamicResource ButtonStyle1}" Width="Auto" Margin="10,5,0,-5" Content="Self Update" Command="{Binding SelfUpdateCommand}" />
+        </WrapPanel>
     </Grid>
 </Window>
