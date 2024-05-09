@@ -12,7 +12,7 @@ byte[] fileBytes = File.ReadAllBytes(filePath);
 var reply = await client.SendUpdatesAsync(new FileMessage
 {
     Filename = "Test.exe",
-    ContentPath = "URL",
+    TargetFolderPath = "URL",
     Content = ByteString.CopyFrom(fileBytes)
 }) ;
 Console.WriteLine("Service update : " + reply.Message );

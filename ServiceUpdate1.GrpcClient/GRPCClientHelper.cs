@@ -37,7 +37,7 @@ namespace ServiceUpdate1.GrpcClient
             return await _client.SendUpdatesAsync(new FileMessage
             {
                 Filename = Path.GetFileName(_filePath),
-                ContentPath = _filePath,
+                TargetFolderPath = _targetFolderPath,
                 Content = ByteString.CopyFrom(fileBytes)
             });
         }
