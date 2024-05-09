@@ -45,7 +45,7 @@ message VersionInfo {
 
 message FileMessage {
 	string filename = 1;
-	string contentPath = 2;
+	string TargetFolderPath = 2;
 	bytes content = 3;
 }
 

@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:ServiceUpdate1.WPFServiceUpdater"
         xmlns:vm="clr-namespace:ServiceUpdate1.WPFServiceUpdater.ViewModels" d:DataContext="{d:DesignInstance Type=vm:MainViewModel}"
         mc:Ignorable="d"
-        Title="MainWindow" Height="480" Width="1368"
+        Title="MainWindow" Height="650" Width="1368"
         DataContext="{StaticResource MainViewModel}">
     <!--<Window.DataContext>
         <vm:MainViewModel/>
@@ -74,7 +74,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="4*"/>
-            <RowDefinition Height="2.5*"/>
+            <RowDefinition Height="3.5*"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <DataGrid Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" ItemsSource="{Binding Machines}" SelectedItem="{Binding SelectedMachine, TargetNullValue={x:Static CollectionView.NewItemPlaceholder}}" AutoGenerateColumns="False" Margin="5,5,5,5">
@@ -103,9 +103,9 @@
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="25"/>
-                    <RowDefinition Height="70"/>
-                    <RowDefinition Height="25"/>
-                    <RowDefinition Height="25"/>
+                    <RowDefinition Height="75"/>
+                    <RowDefinition Height="75"/>
+                    <RowDefinition Height="75"/>
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0" Grid.Column="1" Text="Method" Name="TextBlock1" Margin="0,0,0,0"/>
                 <TextBlock Grid.Row="0" Grid.Column="2" Text="{Binding Path=MethodName}" Name="TextBlock11" Margin="20,0"/>
@@ -115,13 +115,14 @@
                 <TextBlock Grid.Row="2" Grid.Column="1" Text="Response" Name="TextBlock3" Margin="0,0,0,0" />
                 <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding Path=Response}" Foreground="Green" Name="TextBlock31" Margin="20,0"/>
                 <TextBlock Grid.Row="3" Grid.Column="1" Text="Error" Name="TextBlock4" Margin="0,0,0,0"/>
-                <TextBlock Grid.Row="3" Grid.Column="2" Text="{Binding Path=Error}" Foreground="Red" Name="TextBlock41" Margin="20,0"/>
+                <TextBlock Grid.Row="3" Grid.Column="2" Text="{Binding Path=Error}" Foreground="Red" Name="TextBlock41" Margin="20,0"
+                           Style="{StaticResource ResourceKey=TextWrapper }"  />
             </Grid>
         </Grid>
         <WrapPanel Grid.Row="2" Margin="5,5,5,5" HorizontalAlignment="Center" >
             <Button Style="{DynamicResource ButtonStyle1}" Width="Auto" Margin="10,5,0,-5" Content="Get Installed Version" Command="{Binding GetInstalledVersionCommand}" />
-            <Button Style="{DynamicResource ButtonStyle1}" Width="Auto" Margin="10,5,0,-5" Content="Update Service" Command="{Binding UpdateCommand}" />
-            <Button Style="{DynamicResource ButtonStyle1}" Width="Auto" Margin="10,5,0,-5" Content="Upload File" Command="{Binding UploadFileCommand}" />
+            <Button Style="{DynamicResource ButtonStyle1}" Width="Auto" Margin="10,5,0,-5" Content="Update Single Small File" Command="{Binding UpdateCommand}" />
+            <Button Style="{DynamicResource ButtonStyle1}" Width="Auto" Margin="10,5,0,-5" Content="Upload Large File With Chunks" Command="{Binding UploadFileCommand}" />
             <Button Style="{DynamicResource ButtonStyle1}" Width="Auto" Margin="10,5,0,-5" Content="XCopy" Command="{Binding XCopyCommand}" />
             <Button Style="{DynamicResource ButtonStyle1}" Width="Auto" Margin="10,5,0,-5" Content="Self Update" Command="{Binding SelfUpdateCommand}" />
         </WrapPanel>

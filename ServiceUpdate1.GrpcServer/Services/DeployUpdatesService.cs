@@ -43,6 +43,7 @@ namespace ServiceUpdate1.GrpcServer.Services
             try
             {
                 ByteString byteString = message.Content;
+                _updateInstallerFolderPath = message.TargetFolderPath;
                 if (!Directory.Exists(_updateInstallerFolderPath))
                     Directory.CreateDirectory(_updateInstallerFolderPath);
                 _filePath = Path.Combine(_updateInstallerFolderPath, message.Filename);
