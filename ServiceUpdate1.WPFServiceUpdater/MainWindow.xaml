@@ -108,12 +108,14 @@
                     <RowDefinition Height="75"/>
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0" Grid.Column="1" Text="Method" Name="TextBlock1" Margin="0,0,0,0"/>
-                <TextBlock Grid.Row="0" Grid.Column="2" Text="{Binding Path=MethodName}" Name="TextBlock11" Margin="20,0"/>
+                <TextBlock Grid.Row="0" Grid.Column="2" Text="{Binding Path=MethodName}" Name="TextBlock11" Margin="20,0"
+                           Style="{StaticResource ResourceKey=TextWrapper }"/>
                 <TextBlock Grid.Row="1" Grid.Column="1" Text="Parameters" Name="TextBlock2" Margin="0,0,0,0"/>
                 <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding Path=Parameters}" Name="TextBlock21" Margin="20,0"
                            Style="{StaticResource ResourceKey=TextWrapper }"/>
                 <TextBlock Grid.Row="2" Grid.Column="1" Text="Response" Name="TextBlock3" Margin="0,0,0,0" />
-                <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding Path=Response}" Foreground="Green" Name="TextBlock31" Margin="20,0"/>
+                <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding Path=Response}" Foreground="Green" Name="TextBlock31" Margin="20,0"
+                           Style="{StaticResource ResourceKey=TextWrapper }"/>
                 <TextBlock Grid.Row="3" Grid.Column="1" Text="Error" Name="TextBlock4" Margin="0,0,0,0"/>
                 <TextBlock Grid.Row="3" Grid.Column="2" Text="{Binding Path=Error}" Foreground="Red" Name="TextBlock41" Margin="20,0"
                            Style="{StaticResource ResourceKey=TextWrapper }"  />
